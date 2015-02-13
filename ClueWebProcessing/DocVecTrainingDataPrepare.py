@@ -31,8 +31,10 @@ def ProcessOneDoc(lLines):
             continue
         if '<TEXT>' == line[:6]:
             TextFlag = True
+            continue
         if '</TEXT>' == line[:7]:
             TextFlag = False
+            continue
         if TextFlag:
             text += line
     text = TextBaseC.RawClean(text)

@@ -34,7 +34,7 @@ def ProcessOneDoc(lLines):
         if '</TEXT>' == line[:7]:
             TextFlag = False
         if TextFlag:
-            text += line.strip()
+            text += line
     text = TextBaseC.RawClean(text)
     return DocNo+ ' ' + text
 
@@ -50,6 +50,7 @@ out = open(sys.argv[2],'w')
 lLines = []
 DocCnt = 0
 for line in open(sys.argv[1]):
+    line = line.strip()
     if '</DOC>' == line[:6]:
         print >>out, ProcessOneDoc(lLines)
         DocCnt += 1

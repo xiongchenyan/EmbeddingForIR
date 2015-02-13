@@ -27,7 +27,7 @@ def ProcessOneDoc(lLines):
     TextFlag = False
     for line in lLines:
         if "<DOCNO>" == line[:7]:
-            DocNo = line.replace('</DOCNO>','').replace('<DOCNO>')
+            DocNo = line.replace('</DOCNO>','').replace('<DOCNO>','')
             continue
         if '<TEXT>' == line[:6]:
             TextFlag = True

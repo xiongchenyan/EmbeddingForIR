@@ -26,7 +26,7 @@ def ParseOneQueryNode(QueryNode):
     tbd:
         get query id, query, desp and sub topic + st id
     '''
-    Qid = QueryNode.attrib['number']
+    Qid = 'TrecWebTrack_' + QueryNode.attrib['number']
     Query = ""
     lSt = []
     Desp = ""

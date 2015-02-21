@@ -3,6 +3,7 @@
 	<name>EmbeddingForIR</name>
 	<comment></comment>
 	<projects>
+		<project>cxMachineLearning</project>
 		<project>cxPyLib</project>
 		<project>Geektools</project>
 		<project>GoogleAPI</project>

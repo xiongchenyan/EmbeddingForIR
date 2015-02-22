@@ -33,6 +33,7 @@ def KeepDocLine(line,hDocNo,SampleRate = 0.1):
         return True
     
     if key in hDocNo:
+        print key + ' in target set'
         return True
     
     if random.random() < SampleRate:
@@ -45,6 +46,7 @@ def Process(InName,OutName,SVMInName,SampleRate = 0.1):
     hDocNo = LoadTargetDocNo(SVMInName)
     cnt = 0
     for line in open(InName):
+        line = line.strip()
         if KeepDocLine(line, hDocNo, SampleRate):
             print >>out, line
             cnt += 1

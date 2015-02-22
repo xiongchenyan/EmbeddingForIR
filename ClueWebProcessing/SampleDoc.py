@@ -58,6 +58,7 @@ def Process(InName,OutName,SVMInName,SampleRate = 0.1):
 if 5 != len(sys.argv):
     print "In + out + svm in + sample rate"
     print "to sample with fixed target docno's"
+    sys.exit()
     
 SampleRate = float(sys.argv[4])
 Process(sys.argv[1],sys.argv[2],sys.argv[3],SampleRate)

@@ -22,7 +22,7 @@ import site
 site.addsitedir('/bos/usr0/cx/PyCode/cxPyLib')
 site.addsitedir('/bos/usr0/cx/PyCode/GoogleAPI')
 site.addsitedir('/bos/usr0/cx/PyCode/EmbeddingForIR')
-
+site.addsitedir('/bos/usr0/cx/PyCode/cxMachineLearning')
 from cxBase.Conf import cxConfC
 from cxBase.base import cxBaseC
 from word2vec.WordVecBase import Word2VecC,Word2VecReaderC

@@ -46,7 +46,7 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
-        print "distype abs|raw|l2\nqfield topic|desp\ndocvecin"
+        print "distype abs|raw|l2|cos\nqfield topic|desp\ndocvecin"
     
     def SegQIdField(self,QName):
         vCol = QName.split('_')
@@ -88,6 +88,10 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
             ResVec = QVec - DocVec
         if self.DistanceType == 'l2':
             ResVec = Word2VecC.PointWiseL2(QVec, DocVec)
+            
+        if self.DistanceType == 'cos':
+            score = Word2VecC.cosine(QVec, DocVec)
+            ResVec.hDim[0] = score
             
         FeatureVec = VectorC()
         for key,value in ResVec.hDim.items():

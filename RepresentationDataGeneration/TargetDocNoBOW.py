@@ -43,7 +43,7 @@ def ProcessOneDoc(DocId,lTerm,hCtf,hTermId):
             hIdScore[TermId] += score
             
     lIdScore = hIdScore.items()
-    lDocTermScore = ["%d\t%d\t%f" %(DocId,item[0],item[1]) for item in lIdScore]
+    lDocTermScore = ["%d,%d,%f" %(DocId,item[0],item[1]) for item in lIdScore]
     return lDocTermScore
 
 
@@ -80,6 +80,8 @@ def Process(SVMInName,DocTextInName,CtfInName,OutPre):
         DocNo = vCol[0]
         lTerm = vCol[1:]
         
+        if 0 == (LineCnt % 1000):
+            logging.info('processed [%d] lines',LineCnt) 
         if not DocNo in hDocNo:
             continue
         
@@ -89,8 +91,7 @@ def Process(SVMInName,DocTextInName,CtfInName,OutPre):
             lDocTermScore = ProcessOneDoc(DocId, lTerm, hCtf, hTermId)
             print >> out, '\n'.join(lDocTermScore)
             
-        if 0 == (LineCnt % 1000):
-            logging.info('processed [%d] lines',LineCnt) 
+        
             
             
     out.close()

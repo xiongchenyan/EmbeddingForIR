@@ -43,7 +43,7 @@ def ProcessOneDoc(DocId,lTerm,hCtf,hTermId):
             hIdScore[TermId] += score
             
     lIdScore = hIdScore.items()
-    lDocTermScore = [[str(DocId), str(item[0]),str(item[1])] for item in lIdScore]
+    lDocTermScore = ["%d\t%d\t%f" %(DocId,item[0],item[1]) for item in lIdScore]
     return lDocTermScore
 
 

@@ -69,8 +69,10 @@ def Process(SVMInName,DocTextInName,CtfInName,OutPre):
     hTermId = {}
     
     hCtf = pickle.load(open(CtfInName))
+    logging.info('ctf dict loaded')
     out = open(OutPre,'w')
     hDocNo = LoadDocFromSVMData(SVMInName)
+    logging.info('doc no formed')
     for LineCnt,line in enumerate(open(DocTextInName)):
         line = line.strip()
         vCol = line.split()

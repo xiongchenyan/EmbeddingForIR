@@ -34,7 +34,8 @@ def ProcessOneDoc(DocId,lTerm,hCtf,hTermId):
         ctf = 0.5
         if term in hCtf:
             ctf = hCtf[term]
-            
+        if ctf == 0:
+            ctf = 0.5    
         score = math.log(1.0/ctf)
         if not TermId in hIdScore:
             hIdScore[TermId] = score

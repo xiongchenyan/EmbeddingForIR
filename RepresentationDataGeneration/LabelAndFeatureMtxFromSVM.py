@@ -44,7 +44,7 @@ def ProcessOneLine(SVMLine,LineNo, st,ed):
     lFeature.sort(key=lambda item:item[0])
     
     lFRes = ['%s,%s,%s' %(LineNo,item[0] - st + 1,item[1]) for item in lFeature if (item[0] >= st) &(item[0] < ed)]
-    
+    print "get [%d] feature" %(len(lFRes))
     return LabelLine,lFRes
 
 

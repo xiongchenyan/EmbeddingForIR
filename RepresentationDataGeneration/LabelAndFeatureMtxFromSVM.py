@@ -37,7 +37,7 @@ import logging
 def ProcessOneLine(SVMLine,LineNo, st,ed):
     data = SVMDataC(SVMLine)
     
-    LabelLine = "%d,%d" %(data.Label, data.qid)
+    LabelLine = "%d,%s" %(data.Label, data.qid)
     
     lFeature = data.hFeature.items()
     

@@ -34,7 +34,7 @@ and work on the sparse mtx
 from scipy.sparse import csc_matrix
 import numpy as np
 
-import logging,json
+import logging
 
 def LoadSparseMtx(InName):
     lLines = open(InName).read().splitlines()
@@ -43,6 +43,7 @@ def LoadSparseMtx(InName):
     lData = [[int(item[0]) - 1,int(item[1]) - 1,float(item[2])] for item in lData]
     
     Mtx = np.array(lData)
+    logging.info('load full rep mtx shape %d-%d',Mtx.shape[0],Mtx.shape[1])
     SmtxData = csc_matrix(Mtx[:,2],(Mtx[:,0],Mtx[:,1]))
     
     return SmtxData
@@ -114,7 +115,9 @@ def ProcessOneQuery(LabelMtx,ThisRepMtx):
 
 
 def Process(LabelInName,EmbInName,OutName):
+    logging.info('start loading label mtx from [%s]',LabelInName)
     LabelMtx = LoadLabelMtx(LabelInName)
+    logging.info('start loading representation mtx from [%s]',EmbInName)
     EmdMtx = LoadSparseMtx(EmbInName)
     
     out = open(OutName,'w')
@@ -129,6 +132,7 @@ def Process(LabelInName,EmbInName,OutName):
                 continue
         
         ed = i + 1
+        logging.info('q [%s] dat [%d-%d)',qid,st,ed)
         LossScore = ProcessOneQuery(LabelMtx[st:ed,:], EmdMtx[st:ed,:])
         st = ed
         

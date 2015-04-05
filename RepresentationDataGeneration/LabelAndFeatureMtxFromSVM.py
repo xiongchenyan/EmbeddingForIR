@@ -73,7 +73,8 @@ def Process(SVMDataInName,OutName,st = 1, ed = -1):
         LabelLine,lFResLine = ProcessOneLine(line, LineNo + 1, st, ed)
         
         print >>LabelOut, LabelLine
-        print >>FOut, '\n'.join(lFResLine)
+        if len(lFResLine) > 0:
+            print >>FOut, '\n'.join(lFResLine)
         
         if 0 == (LineNo % 100):
             print "processed [%d] lines" %(LineNo)

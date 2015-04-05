@@ -144,17 +144,17 @@ if 4 != len(sys.argv):
     print "label in name + emd in name + out name"
     sys.exit()
     
-    root = logging.getLogger()
-    root.setLevel(logging.INFO)
+root = logging.getLogger()
+root.setLevel(logging.INFO)
 
-    ch = logging.StreamHandler(sys.stdout)
-    ch.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    ch.setFormatter(formatter)
-    root.addHandler(ch)
-    
-    
-    Process(sys.argv[1], sys.argv[2], sys.argv[3])
+ch = logging.StreamHandler(sys.stdout)
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+root.addHandler(ch)
+
+
+Process(sys.argv[1], sys.argv[2], sys.argv[3])
         
             
             

@@ -42,9 +42,9 @@ def ProcessOneLine(SVMLine,LineNo, st,ed):
     lFeature = data.hFeature.items()
     
     lFeature.sort(key=lambda item:item[0])
-    print "original [%d] feature" %(len(lFeature))
+#     print "original [%d] feature" %(len(lFeature))
     lFRes = ['%s,%s,%s' %(LineNo,item[0] - st + 1,item[1]) for item in lFeature if (item[0] >= st) &(item[0] < ed)]
-    print "get [%d] feature in [%d-%d)" %(len(lFRes),st,ed)
+#     print "get [%d] feature in [%d-%d)" %(len(lFRes),st,ed)
     return LabelLine,lFRes
 
 

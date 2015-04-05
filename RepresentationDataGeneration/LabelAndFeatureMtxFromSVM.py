@@ -63,7 +63,8 @@ def ReadForMinAndMax(SVMDataInName):
 def Process(SVMDataInName,OutName,st = 1, ed = -1):
     if ed == -1:
         st,ed = ReadForMinAndMax(SVMDataInName)
-        
+    
+    print "feature target [%d-%d)" %(st,ed)    
     LabelOut = open(OutName + "_label","w")
     FOut = open(OutName + '_feature','w')
     for LineNo,line in enumerate(open(SVMDataInName)):

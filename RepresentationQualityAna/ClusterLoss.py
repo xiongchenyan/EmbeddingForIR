@@ -111,6 +111,57 @@ def ProcessOneQuery(LabelMtx,ThisRepMtx):
     
     logging.info('q[%d] loss [%f]',LabelMtx[0,1],LossScore)
     return LossScore
+
+
+def Process(LabelInName,EmbInName,OutName):
+    LabelMtx = LoadLabelMtx(LabelInName)
+    EmdMtx = LoadSparseMtx(EmbInName)
+    
+    out = open(OutName,'w')
+    st = 0
+    ed = 0
+    for i in range(LabelMtx.shape[0]):
+        qid = LabelMtx[i,1]
+        LossScore = -1
+        
+        if i < LabelMtx.shape[0] - 1:
+            if LabelMtx[i+1,1] != qid:
+                continue
+        
+        ed = i + 1
+        LossScore = ProcessOneQuery(LabelMtx[st:ed,:], EmdMtx[st:ed,:])
+        st = ed
+        
+        print >>out, '%s\t%f' %(qid,LossScore)
+        logging.info('qid [%s] processed [%f] cluster loss',qid,LossScore)
+        
+    out.close()
+    
+    
+import sys
+
+if 4 != len(sys.argv):
+    print "label in name + emd in name + out name"
+    sys.exit()
+    
+    root = logging.getLogger()
+    root.setLevel(logging.INFO)
+
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    root.addHandler(ch)
+    
+    
+    Process(sys.argv[1], sys.argv[2], sys.argv[3])
+        
+            
+            
+            
+            
+    
+    
     
             
     

@@ -26,13 +26,13 @@ a sparse featue mtx file
 
 
 import site
-from MLBase.SVMData import SVMDataC
-import logging
 site.addsitedir('/bos/usr0/cx/PyCode/cxPyLib')
 site.addsitedir('/bos/usr0/cx/PyCode/EmbeddingForIR')
 site.addsitedir('/bos/usr0/cx/PyCode/cxMachineLearning')
 
 
+from MLBase.SVMData import SVMDataC
+import logging
 
 def ProcessOneLine(SVMLine,LineNo, st,ed):
     data = SVMDataC(SVMLine)

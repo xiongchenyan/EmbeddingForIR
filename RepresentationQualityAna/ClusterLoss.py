@@ -89,8 +89,10 @@ def ProcessOneQuery(LabelMtx,ThisRepMtx):
             NegCenter += ThisRepMtx.getrow(i)
             NegCnt += 1
     
-    PosCenter /= float(PosCnt)
-    NegCenter /= float(NegCnt)
+    if PosCnt != 0:
+        PosCenter /= float(PosCnt)
+    if NegCnt != 0:
+        NegCenter /= float(NegCnt)
     
     logging.info('q [%d] [%d] pos [%d] neg',LabelMtx[0,1],PosCenter,NegCenter)
     
@@ -126,14 +128,16 @@ def Process(LabelInName,EmbInName,OutName):
     ed = 0
     for i in range(LabelMtx.shape[0]):
         qid = LabelMtx[i,1]
+        logging.debug('current qid [%s]',qid)
         LossScore = -1
         
         if i < LabelMtx.shape[0] - 1:
             if LabelMtx[i+1,1] != qid:
+                logging.debug('next qid [%s]',LabelMtx[i+1,1])
                 continue
         
         ed = i + 1
-        logging.info('q [%s] dat [%d-%d)',qid,st,ed)
+        logging.info('q [%s] data [%d-%d)',qid,st,ed)
         LossScore = ProcessOneQuery(LabelMtx[st:ed,:], EmdMtx[st:ed,:])
         st = ed
         
@@ -150,7 +154,7 @@ if 4 != len(sys.argv):
     sys.exit()
     
 root = logging.getLogger()
-root.setLevel(logging.INFO)
+root.setLevel(logging.DEBUG)
 
 ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.DEBUG)

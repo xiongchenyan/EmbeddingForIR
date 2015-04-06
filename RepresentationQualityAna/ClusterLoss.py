@@ -49,7 +49,9 @@ def LoadSparseMtx(InName):
     logging.info('start normalize SmtxData')
     
     for i in range(SmtxData.shape[0]):
-        SmtxData[i,:] /= float(math.sqrt(SmtxData.getrow(i).multiply(SmtxData.getrow(i)).sum()))
+        L2Norm = float(math.sqrt(SmtxData.getrow(i).multiply(SmtxData.getrow(i)).sum()))
+        if 0 != L2Norm:
+            SmtxData[i,:] /= L2Norm 
     logging.info('normalized to unit length')
     return SmtxData
 

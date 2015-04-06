@@ -34,7 +34,7 @@ and work on the sparse mtx
 from scipy.sparse import csc_matrix
 import numpy as np
 
-import logging
+import logging,math
 
 def LoadSparseMtx(InName):
     lLines = open(InName).read().splitlines()
@@ -46,6 +46,11 @@ def LoadSparseMtx(InName):
     logging.info('load full rep mtx shape %d-%d',Mtx.shape[0],Mtx.shape[1])
     SmtxData = csc_matrix((Mtx[:,2],(Mtx[:,0],Mtx[:,1])))
     
+    logging.info('start normalize SmtxData')
+    
+    for i in range(SmtxData.shape[0]):
+        SmtxData[i,:] /= float(math.sqrt(SmtxData.getrow(i).multiply(SmtxData.getrow(i)).sum()))
+    logging.info('normalized to unit length')
     return SmtxData
 
 

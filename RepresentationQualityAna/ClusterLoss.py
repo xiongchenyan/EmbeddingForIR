@@ -94,7 +94,7 @@ def ProcessOneQuery(LabelMtx,ThisRepMtx):
     if NegCnt != 0:
         NegCenter /= float(NegCnt)
     
-    logging.info('q [%d] [%d] pos [%d] neg',LabelMtx[0,1],PosCenter,NegCenter)
+    logging.info('q [%s] [%d] pos [%d] neg',LabelMtx[0,1],PosCnt,NegCnt)
     
     '''
     start calculate cluster loss
@@ -128,12 +128,10 @@ def Process(LabelInName,EmbInName,OutName):
     ed = 0
     for i in range(LabelMtx.shape[0]):
         qid = LabelMtx[i,1]
-        logging.debug('current qid [%s]',qid)
         LossScore = -1
         
         if i < LabelMtx.shape[0] - 1:
-            if LabelMtx[i+1,1] != qid:
-                logging.debug('next qid [%s]',LabelMtx[i+1,1])
+            if LabelMtx[i+1,1] == qid:
                 continue
         
         ed = i + 1

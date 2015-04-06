@@ -110,7 +110,6 @@ def ProcessOneQuery(LabelMtx,ThisRepMtx):
     start calculate cluster loss
     '''        
     
-    LossScore = 0
     SameClassDis = 0
     DiffClassDis = 0
     for i in range(LabelMtx.shape[0]):
@@ -121,8 +120,8 @@ def ProcessOneQuery(LabelMtx,ThisRepMtx):
         else:
             DiffDiff = ThisRow - PosCenter
             SameDiff = ThisRow  - NegCenter
-        SameClassDis = math.sqrt(SameDiff.multiply(SameDiff).sum()) / float(ThisRepMtx.shape[1])
-        DiffClassDis = math.sqrt(DiffDiff.multiply(DiffDiff).sum()) / float(ThisRepMtx.shape[1])
+        SameClassDis += math.sqrt(SameDiff.multiply(SameDiff).sum())
+        DiffClassDis += math.sqrt(DiffDiff.multiply(DiffDiff).sum())
         
     LossScore = SameClassDis / DiffClassDis
     

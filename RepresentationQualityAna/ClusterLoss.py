@@ -44,7 +44,7 @@ def LoadSparseMtx(InName):
     
     Mtx = np.array(lData)
     logging.info('load full rep mtx shape %d-%d',Mtx.shape[0],Mtx.shape[1])
-    SmtxData = csc_matrix(Mtx[:,2],(Mtx[:,0],Mtx[:,1]))
+    SmtxData = csc_matrix((Mtx[:,2],(Mtx[:,0],Mtx[:,1])))
     
     return SmtxData
 
@@ -120,6 +120,7 @@ def Process(LabelInName,EmbInName,OutName):
     logging.info('start loading representation mtx from [%s]',EmbInName)
     EmdMtx = LoadSparseMtx(EmbInName)
     
+    logging.info('data loaded')
     out = open(OutName,'w')
     st = 0
     ed = 0

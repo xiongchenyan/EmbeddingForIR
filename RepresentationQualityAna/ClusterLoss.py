@@ -46,12 +46,15 @@ def LoadSparseMtx(InName):
     logging.info('load full rep mtx shape %d-%d',Mtx.shape[0],Mtx.shape[1])
     SmtxData = csc_matrix((Mtx[:,2],(Mtx[:,0],Mtx[:,1])))
     
-    logging.info('start normalize SmtxData')
+#     logging.info('start normalize SmtxData')
+#     
+#     for i in range(SmtxData.shape[0]):
+#         L2Norm = float(math.sqrt(SmtxData.getrow(i).multiply(SmtxData.getrow(i)).sum()))
+#         if 0 != L2Norm:
+#             SmtxData[i,:] /= L2Norm 
+            
     
-    for i in range(SmtxData.shape[0]):
-        L2Norm = float(math.sqrt(SmtxData.getrow(i).multiply(SmtxData.getrow(i)).sum()))
-        if 0 != L2Norm:
-            SmtxData[i,:] /= L2Norm 
+            
     logging.info('normalized to unit length')
     return SmtxData
 
@@ -108,15 +111,20 @@ def ProcessOneQuery(LabelMtx,ThisRepMtx):
     '''        
     
     LossScore = 0
+    SameClassDis = 0
+    DiffClassDis = 0
     for i in range(LabelMtx.shape[0]):
         ThisRow = ThisRepMtx.getrow(i)
         if LabelMtx[i,0] > 0:
-            Diff = ThisRow.transpose().dot(PosCenter)
+            SameDiff = ThisRow - PosCenter
+            DiffDiff = ThisRow  - NegCenter
         else:
-            Diff = ThisRow.transpose().dot(NegCenter)
-        LossScore += Diff[0,0]
+            DiffDiff = ThisRow - PosCenter
+            SameDiff = ThisRow  - NegCenter
+        SameClassDis = math.sqrt(SameDiff.multiply(SameDiff).sum()) / float(ThisRepMtx.shape[1])
+        DiffClassDis = math.sqrt(DiffDiff.multiply(DiffDiff).sum()) / float(ThisRepMtx.shape[1])
         
-    LossScore /= float(PosCnt + NegCnt)
+    LossScore = SameClassDis / DiffClassDis
     
     logging.info('q[%d] loss [%f]',LabelMtx[0,1],LossScore)
     return LossScore

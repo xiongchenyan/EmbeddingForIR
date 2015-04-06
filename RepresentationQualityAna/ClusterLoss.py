@@ -146,7 +146,7 @@ def Process(LabelInName,EmbInName,OutName):
         LossScore = ProcessOneQuery(LabelMtx[st:ed,:], EmdMtx[st:ed,:])
         st = ed
         
-        print >>out, '%s\t%f' %(qid,LossScore)
+        print >>out, '%s\t%.20f' %(qid,LossScore)
         logging.info('qid [%s] processed [%f] cluster loss',qid,LossScore)
         
     out.close()

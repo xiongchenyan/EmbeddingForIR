@@ -111,11 +111,9 @@ def ProcessOneQuery(LabelMtx,ThisRepMtx):
     for i in range(LabelMtx.shape[0]):
         ThisRow = ThisRepMtx.getrow(i)
         if LabelMtx[i,0] > 0:
-            Diff = ThisRow - PosCenter
+            Diff = ThisRow.transpose().dot(PosCenter)
         else:
-            Diff = ThisRow - NegCenter
-        Diff = Diff.multiply(Diff)
-        LossScore += Diff.mean()
+            Diff = ThisRow.transpose().dot(NegCenter)
         
     LossScore /= float(PosCnt + NegCnt)
     

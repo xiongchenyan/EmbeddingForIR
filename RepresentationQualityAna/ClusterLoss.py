@@ -114,6 +114,7 @@ def ProcessOneQuery(LabelMtx,ThisRepMtx):
             Diff = ThisRow.transpose().dot(PosCenter)
         else:
             Diff = ThisRow.transpose().dot(NegCenter)
+        LossScore += Diff[0,0]
         
     LossScore /= float(PosCnt + NegCnt)
     
@@ -131,6 +132,8 @@ def Process(LabelInName,EmbInName,OutName):
     out = open(OutName,'w')
     st = 0
     ed = 0
+    MeanScore = 0
+    QCnt = 0
     for i in range(LabelMtx.shape[0]):
         qid = LabelMtx[i,1]
         LossScore = -1
@@ -143,11 +146,17 @@ def Process(LabelInName,EmbInName,OutName):
         logging.info('q [%s] data [%d-%d)',qid,st,ed)
         LossScore = ProcessOneQuery(LabelMtx[st:ed,:], EmdMtx[st:ed,:])
         st = ed
-        
+        QCnt += 1
         print >>out, '%s\t%.20f' %(qid,LossScore)
+        MeanScore += LossScore
         logging.info('qid [%s] processed [%f] cluster loss',qid,LossScore)
-        
+    
+    MeanScore /= float(QCnt)
+    
+    print >>out, 'mean\t%.20f' %(MeanScore)
     out.close()
+    logging.info('finished')
+    
     
     
 import sys

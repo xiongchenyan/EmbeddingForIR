@@ -108,7 +108,7 @@ def ProcessOneQuery(LabelMtx,ThisRepMtx):
         else:
             Diff = ThisRow - NegCenter
         Diff = Diff.multiply(Diff)
-        LossScore += Diff.sum()
+        LossScore += Diff.mean()
         
     LossScore /= float(PosCnt + NegCnt)
     

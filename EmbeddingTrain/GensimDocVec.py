@@ -30,7 +30,6 @@ workers = use this many worker threads to train the model (=faster training with
 
 hs = if 1 (default), hierarchical sampling will be used for model training (else set to 0).
 
-negative = if > 0, negative sampling will be used, the int for negative specifies how many “noise words” should be drawn (usually between 5-20).
 
 dm_mean = if 0 (default), use the sum of the context word vectors. If 1, use the mean. Only applies when dm is used.
 
@@ -93,7 +92,7 @@ class GensimDocVecC(cxBaseC):
         print "default is 0 (off), useful value is 1e-5."
         print "workers = use this many worker threads to train the model (=faster training with multicore machines)."
         print "hs = if 1 (default), hierarchical sampling will be used for model training (else set to 0)."
-        print "negative = if > 0, negative sampling will be used, the int for negative specifies how many “noise words” should be drawn (usually between 5-20)."
+        print "negative = if > 0, negative sampling will be used, the int for negative specifies."
         print "dm_mean = if 0 (default), use the sum of the context word vectors. If 1, use the mean. Only applies when dm is used."
         print "in\nout"
     

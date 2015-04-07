@@ -99,7 +99,7 @@ class GensimDocVecC(cxBaseC):
     def Train(self):
         sentence = LabeledLineSentence(self.InName)
         logging.info('start training on [%s]',self.InName)
-        model = DocVec(sentence,size=self.size,min_count=self.min_count,sample=self.sample,workers=self.workers,dm=self.dm,hs=self.hs,negative=self.negative)
+        model = Doc2Vec(sentence,size=self.size,min_count=self.min_count,sample=self.sample,workers=self.workers,dm=self.dm,hs=self.hs,negative=self.negative)
         
         logging.info('training complete')
         model.save(self.OutName)

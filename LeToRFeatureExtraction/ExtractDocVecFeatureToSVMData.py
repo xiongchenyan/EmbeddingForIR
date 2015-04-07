@@ -36,17 +36,19 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
         self.DistanceType = "abs"
         self.QField = "topic"
         self.DocVecInName = ""
+        self.OverWrite = False
     
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
         self.DistanceType = self.conf.GetConf('distype', self.DistanceType)
         self.QField = self.conf.GetConf('qfield', self.QField)
         self.DocVecInName = self.conf.GetConf('docvecin')
+        self.OverWrite = bool(int(self.conf.GetConf('overwrite',0)))
     
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
-        print "distype abs|raw|l2|cos\nqfield topic|desp\ndocvecin"
+        print "distype abs|raw|l2|cos\nqfield topic|desp\ndocvecin\noverwrite 0"
     
     def SegQIdField(self,QName):
         vCol = QName.split('_')
@@ -94,9 +96,12 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
             ResVec.hDim[0] = score
             
         FeatureVec = VectorC()
-        for key,value in ResVec.hDim.items():
-            NewKey = key + StFeatureDim
-            FeatureVec.hDim[NewKey] = value
+        if self.OverWrite:
+            FeatureVec.hDim = dict(ResVec.hDim)
+        else:
+            for key,value in ResVec.hDim.items():
+                NewKey = key + StFeatureDim
+                FeatureVec.hDim[NewKey] = value
         return FeatureVec
     
     def ReadSVMForMaxFeatureDim(self,SVMInName):
@@ -119,7 +124,10 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
             return LeToRData
         
         FeatureVec = self.GenerateEmbeddingFeatureVector(self.hDocVec[Qid], self.hDocVec[DocNo])
-        LeToRData.hFeature.update(FeatureVec.hDim)
+        if self.OverWrite:
+            LeToRData.hFeature = FeatureVec.hDim
+        else:
+            LeToRData.hFeature.update(FeatureVec.hDim)
         
         return LeToRData
     

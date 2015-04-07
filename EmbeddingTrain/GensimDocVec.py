@@ -97,7 +97,7 @@ class GensimDocVecC(cxBaseC):
         print "in\nout"
     
     def Train(self):
-        sentence = LineSentence(self.InName)
+        sentence = LabeledLineSentence(self.InName)
         logging.info('start training on [%s]',self.InName)
         model = DocVec(sentence,size=self.size,min_count=self.min_count,sample=self.sample,workers=self.workers,dm=self.dm,hs=self.hs,negative=self.negative)
         

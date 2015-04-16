@@ -18,6 +18,18 @@ a new SVM data, with features
 '''
 
 
+'''
+Apr 16 2015
+Support loading gensim doc2vec format
+load the model in LoadDocVec (but not store in hDocVec)
+for each pair of qid and doc, fetch them before throw into generator
+    pack gensim vector to VectorC() format as well
+this will be rather memory consuming    
+
+need do a docno-> internal id mapping for gensim first = =
+'''
+
+
 import site
 site.addsitedir('/bos/usr0/cx/PyCode/cxPyLib')
 site.addsitedir('/bos/usr0/cx/PyCode/GoogleAPI')
@@ -28,15 +40,20 @@ from cxBase.base import cxBaseC
 from word2vec.WordVecBase import Word2VecC,Word2VecReaderC
 from cxBase.Vector import VectorC
 from LeToR.LeToRDataBase import LeToRDataBaseC
-
+from gensim.models.doc2vec  import *
+import logging
 class ExtractDocVecFeatureToSVMDataC(cxBaseC):
     def Init(self):
         cxBaseC.Init(self)
         self.hDocVec = {}
+        self.DocVecModel = None
+        self.hDocNoInternalId = {}
         self.DistanceType = "abs"
         self.QField = "topic"
         self.DocVecInName = ""
         self.OverWrite = False
+        self.DocVecInType = 'text'
+        self.DocNoInName = ""
     
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
@@ -44,11 +61,14 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
         self.QField = self.conf.GetConf('qfield', self.QField)
         self.DocVecInName = self.conf.GetConf('docvecin')
         self.OverWrite = bool(int(self.conf.GetConf('overwrite',0)))
+        self.DocVecInType = self.conf.GetConf('docvecintype', self.DocVecInType)
+        self.DocNoInName = self.conf.GetConf('docnoinname')
     
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
         print "distype abs|raw|l2|cos\nqfield topic|desp\ndocvecin\noverwrite 0"
+        print 'docvecintype text|gensim\ndocnoinname'
     
     def SegQIdField(self,QName):
         vCol = QName.split('_')
@@ -65,8 +85,31 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
             field = 'desp'
         return Id,field
         
-        
+    
+    
     def LoadDocVec(self):
+        
+        if self.DocVecInType == 'text':
+            self.LoadTextDocVec()
+            
+        if self.DocVecInType == 'gensim':
+            self.LoadGensimDocVec()
+            lLines = open(self.DocNoInName).read().splitlines()
+            lInternalId = ['SENT_%s' %(i) for i in range(len(lLines))]
+            self.hDocNoInternalId = dict(zip(lLines,lInternalId))
+        
+        return True
+        
+    def LoadGensimDocVec(self):
+        logging.info('start load gensim doc vec [%s]',self.DocVecInName)
+        self.DocVecModel = Doc2Vec.load(self.DocVecInName)
+        logging.info('loaded')
+        return True
+        
+        
+            
+    
+    def LoadTextDocVec(self):
         Reader = Word2VecReaderC()
         Reader.open(self.DocVecInName)
         for wordvec in Reader:
@@ -79,6 +122,7 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
                 self.hDocVec[wordvec.word] = wordvec
         print 'docvec loaded, total [%d]' %(len(self.hDocVec))
         return True
+    
     
     
     def GenerateEmbeddingFeatureVector(self,QVec,DocVec):
@@ -112,18 +156,45 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
         self.StFeatureDim += 1
         print "new feature start from [%d]" %(self.StFeatureDim)
     
+    
+    
+    def FetchDocVec(self,TargetNo,IsQid = False):
+        
+        if self.DocVecInType == 'text':
+            if not TargetNo in self.hDocVec:
+                return None
+            return self.hDocVec[TargetNo]
+        
+        if self.DistanceType == 'gensim':
+            if IsQid:
+                TargetNo = 'TrecWebTrack_' + TargetNo + '_' + self.QField
+            
+            if not TargetNo in self.hDocNoInternalId:
+                return None
+            TargetNo = self.hDocNoInternalId[TargetNo]   #transfer to SENT_%d
+            if not TargetNo in self.DocVecModel:
+                return None
+            VecArray = self.DocVecModel[TargetNo]
+            return VectorC(list(VecArray))
+            
+        
+        return None
+    
+    
     def ProcessOneInstance(self,LeToRData):
         Qid = LeToRData.qid
         DocNo = LeToRData.DocNo
-        if (not Qid in self.hDocVec) :
-            #do nothing
-            print 'Qid[%s] doc vec not found' %(Qid)
+        
+        QVec = self.FetchDocVec(Qid, IsQid=True)
+        if QVec == None:
+            logging.warn('qid [%s] doc vec not found', Qid)
             return LeToRData
-        if (not DocNo in self.hDocVec):
-            print 'Doc[%s] doc vec not found' %(DocNo)
+        DocVec = self.FetchDocVec(DocNo)
+        if DocVec == None:
+            logging.warn('doc [%s] doc vec not found',DocNo)
             return LeToRData
         
-        FeatureVec = self.GenerateEmbeddingFeatureVector(self.hDocVec[Qid], self.hDocVec[DocNo])
+        FeatureVec = self.GenerateEmbeddingFeatureVector(QVec,DocVec)
         if self.OverWrite:
             LeToRData.hFeature = FeatureVec.hDim
         else:
@@ -143,19 +214,31 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
         out.close()
         print "finished"
         
-        
-import sys
-if 2 != len(sys.argv):
-    ExtractDocVecFeatureToSVMDataC.ShowConf()
-    print "in\nout"    
-    sys.exit()
-    
-conf = cxConfC(sys.argv[1])
-SVMInName = conf.GetConf('in')
-OutName = conf.GetConf('out')
 
-Extractor = ExtractDocVecFeatureToSVMDataC(sys.argv[1])
-Extractor.Process(SVMInName, OutName)
+
+if __name__ == '__main__':        
+    import sys
+    if 2 != len(sys.argv):
+        ExtractDocVecFeatureToSVMDataC.ShowConf()
+        print "in\nout"    
+        sys.exit()
+    
+    root = logging.getLogger()
+    root.setLevel(logging.INFO)
+    
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    root.addHandler(ch)
+    
+        
+    conf = cxConfC(sys.argv[1])
+    SVMInName = conf.GetConf('in')
+    OutName = conf.GetConf('out')
+    
+    Extractor = ExtractDocVecFeatureToSVMDataC(sys.argv[1])
+    Extractor.Process(SVMInName, OutName)
 
     
         

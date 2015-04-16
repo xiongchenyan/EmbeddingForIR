@@ -174,9 +174,11 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
                     TargetNo = 'TrecWebTrack_' + TargetNo + '_' + self.QField
             
             if not TargetNo in self.hDocNoInternalId:
+                logging.warn('Target No [%s] no in doc no to internal id mapping',TargetNo)
                 return None
             TargetNo = self.hDocNoInternalId[TargetNo]   #transfer to SENT_%d
             if not TargetNo in self.DocVecModel:
+                logging.warn('target no [%s] not in doc vec',TargetNo)
                 return None
             VecArray = self.DocVecModel[TargetNo]
             return VectorC(list(VecArray))

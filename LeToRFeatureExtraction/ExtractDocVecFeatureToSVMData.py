@@ -166,7 +166,7 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
                 return None
             return self.hDocVec[TargetNo]
         
-        if self.DistanceType == 'gensim':
+        if self.DocVecInType == 'gensim':
             if IsQid:
                 if self.QField == 'topic':
                     TargetNo = 'TrecWebTrack_' + TargetNo
@@ -183,7 +183,7 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
             VecArray = self.DocVecModel[TargetNo]
             return VectorC(list(VecArray))
             
-        
+        logging.error('doc vec in type [%s] not supportted',self.DocVecInType)
         return None
     
     

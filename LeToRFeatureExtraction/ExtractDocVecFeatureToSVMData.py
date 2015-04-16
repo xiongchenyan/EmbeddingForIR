@@ -42,6 +42,8 @@ from cxBase.Vector import VectorC
 from LeToR.LeToRDataBase import LeToRDataBaseC
 from gensim.models.doc2vec  import *
 import logging
+import numpy as np
+import json
 class ExtractDocVecFeatureToSVMDataC(cxBaseC):
     def Init(self):
         cxBaseC.Init(self)
@@ -54,6 +56,7 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
         self.OverWrite = False
         self.DocVecInType = 'text'
         self.DocNoInName = ""
+        self.hQidQuery = {}    #used to map qid to query terms
     
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
@@ -63,12 +66,17 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
         self.OverWrite = bool(int(self.conf.GetConf('overwrite',0)))
         self.DocVecInType = self.conf.GetConf('docvecintype', self.DocVecInType)
         self.DocNoInName = self.conf.GetConf('docnoinname')
+        
+        QInName = self.conf.GetConf('qin')
+        if "" != QInName:
+            lLines = open(QInName).read().splitlines()
+            self.hQidQuery = dict([line.split('\t') for line in lLines])
     
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
         print "distype abs|raw|l2|cos\nqfield topic|desp\ndocvecin\noverwrite 0"
-        print 'docvecintype text|gensim\ndocnoinname'
+        print 'docvecintype text|gensim\ndocnoinname\nqin'
     
     def SegQIdField(self,QName):
         vCol = QName.split('_')
@@ -168,10 +176,11 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
         
         if self.DocVecInType == 'gensim':
             if IsQid:
-                if self.QField == 'topic':
-                    TargetNo = 'TrecWebTrack_' + TargetNo
-                else:
-                    TargetNo = 'TrecWebTrack_' + TargetNo + '_' + self.QField
+                return self.GenerateGensimQVec(TargetNo)
+#                 if self.QField == 'topic':
+#                     TargetNo = 'TrecWebTrack_' + TargetNo
+#                 else:
+#                     TargetNo = 'TrecWebTrack_' + TargetNo + '_' + self.QField
             
             if not TargetNo in self.hDocNoInternalId:
                 logging.warn('Target No [%s] no in doc no to internal id mapping',TargetNo)
@@ -186,6 +195,23 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
         logging.error('doc vec in type [%s] not supportted',self.DocVecInType)
         return None
     
+    
+    def GenerateGensimQVec(self,Qid):
+        query = self.hQidQuery[Qid]
+        lQTerm = query.split()
+        
+        lQTerm = [term.lower() for term in lQTerm if term.lower() in self.DocVecModel]
+        logging.info('calculating avg vec of q term [%s] for q [%s]',json.dumps(lQTerm),query)
+        lQArray = [self.DocVecModel[term] for term in lQTerm]
+        if len(lQArray) == 0:
+            return None
+        MeanArray = lQArray[0]
+        for QArray in lQArray[1:]:
+            MeanArray += QArray
+        MeanArray /= float(len(lQArray))
+        return VectorC(list(MeanArray))
+        
+        
     
     def ProcessOneInstance(self,LeToRData):
         Qid = LeToRData.qid

@@ -162,12 +162,16 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
         
         if self.DocVecInType == 'text':
             if not TargetNo in self.hDocVec:
+                logging.warn('TargetNo [%s] doc vec not found in text', TargetNo)
                 return None
             return self.hDocVec[TargetNo]
         
         if self.DistanceType == 'gensim':
             if IsQid:
-                TargetNo = 'TrecWebTrack_' + TargetNo + '_' + self.QField
+                if self.QField == 'topic':
+                    TargetNo = 'TrecWebTrack_' + TargetNo
+                else:
+                    TargetNo = 'TrecWebTrack_' + TargetNo + '_' + self.QField
             
             if not TargetNo in self.hDocNoInternalId:
                 return None
@@ -187,11 +191,9 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
         
         QVec = self.FetchDocVec(Qid, IsQid=True)
         if QVec == None:
-            logging.warn('qid [%s] doc vec not found', Qid)
             return LeToRData
         DocVec = self.FetchDocVec(DocNo)
         if DocVec == None:
-            logging.warn('doc [%s] doc vec not found',DocNo)
             return LeToRData
         
         FeatureVec = self.GenerateEmbeddingFeatureVector(QVec,DocVec)

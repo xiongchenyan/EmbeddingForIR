@@ -83,7 +83,10 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
     
     def GenerateEmbeddingFeatureVector(self,QVec,DocVec):
         ResVec = Word2VecC()
-        StFeatureDim = self.StFeatureDim
+        if self.OverWrite:
+            StFeatureDim = 1
+        else:
+            StFeatureDim = self.StFeatureDim
         if self.DistanceType == 'abs':
             ResVec = abs(QVec - DocVec)
         if self.DistanceType == 'raw':
@@ -96,12 +99,9 @@ class ExtractDocVecFeatureToSVMDataC(cxBaseC):
             ResVec.hDim[0] = score
             
         FeatureVec = VectorC()
-        if self.OverWrite:
-            FeatureVec.hDim = dict(ResVec.hDim)
-        else:
-            for key,value in ResVec.hDim.items():
-                NewKey = key + StFeatureDim
-                FeatureVec.hDim[NewKey] = value
+        for key,value in ResVec.hDim.items():
+            NewKey = key + StFeatureDim
+            FeatureVec.hDim[NewKey] = value
         return FeatureVec
     
     def ReadSVMForMaxFeatureDim(self,SVMInName):

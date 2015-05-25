@@ -28,10 +28,7 @@ site.addsitedir('/bos/usr0/cx/PyCode/cxMachineLearning')
 from cxBase.Conf import cxConfC
 from cxBase.base import cxBaseC
 from cxBase.Vector import VectorC
-from gensim.models.doc2vec  import *
 import logging
-import numpy as np
-import json
 
 from EmbeddingFeatureExtractor import EmbeddingFeatureExtractorC
 

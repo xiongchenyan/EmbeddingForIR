@@ -31,8 +31,11 @@ class LeToRGivenFeatureExtractorC(LeToRFeatureExtractorC):
         
         
     def Prepare(self):
+        if self.Prepared:
+            return
         LeToRFeatureExtractorC.Prepare(self)
         self.LoadExistingSVMData()
+        self.Prepared = True
         
     def LoadExistingSVMData(self):
         lLines = open(self.ExistingSVMInName).read().splitlines()

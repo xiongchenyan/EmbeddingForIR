@@ -65,11 +65,14 @@ class EmbeddingTermPairFeatureExtractorC(EmbeddingFeatureExtractorC):
         EmbeddingFeatureExtractorC.Extract(self, qid, query, doc, Word2VecModel)
         hFeature = {}
         lQVec = self.FetchQTermEmbedding(query, Word2VecModel)
-        
+        if len(lQVec) != len(query.strip()):
+            logging.warn('query [%s] only [%d/%d] found in word2vec',query,len(lQVec),len(query.strip()))
         
         for field in self.lDocField:
             lTerm = doc.GetField(field).lower().split()
             lDVec = [VectorC(list(Word2VecModel[term])) for term in lTerm if term in Word2VecModel]
+            if len(lDVec) != len(lTerm):
+                logging.warn('doc [%s][%s] only [%d/%d] found in word2vec',doc.DocNo,field,len(lDVec).len(lTerm))
             for SimMetric in self.lSimMetric:
                 for MergeMetric in self.lMergeMetric:
                     score = self.CalcPairWiseSim(lQVec,lDVec,SimMetric,MergeMetric)

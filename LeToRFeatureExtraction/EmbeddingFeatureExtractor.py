@@ -34,3 +34,20 @@ class EmbeddingFeatureExtractorC(LeToRFeatureExtractorC):
         LeToRFeatureExtractorC.Extract(self, qid, query, doc)
         hFeature = {}
         return hFeature
+
+    def FetchQTermEmbedding(self,query,Word2VecModel):
+        lVector = []
+        lQTerm = query.lower().split()
+        
+        for qt in lQTerm:
+            if not qt in Word2VecModel:
+                continue
+            lVector.append(VectorC(list(Word2VecModel[qt])))
+        return lVector
+    
+    def FetchDocTermEmbedding(self,doc,Word2VecModel):
+        lTerm = doc.GetContent().lower().split()
+        lVector = [VectorC(list(Word2VecModel[term])) for term in lTerm if term in Word2VecModel]
+        return lVector
+    
+        

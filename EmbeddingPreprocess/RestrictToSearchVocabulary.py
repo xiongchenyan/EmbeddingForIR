@@ -24,6 +24,7 @@ from IndriSearch.IndriSearchCenter import IndriSearchCenterC
 
 
 def MakeVocabulary(QInName,Searcher):
+    print 'start making vocabulary'
     sVoc = set()
     for line in open(QInName):
         qid,query = line.strip().split('\t')
@@ -34,6 +35,8 @@ def MakeVocabulary(QInName,Searcher):
         for doc in lDoc:
             lDT = doc.GetContent().lower().split()
             sVoc.update(set(lDT))
+        print 'qid [%s] done now voc size [%d]' %(qid, len(sVoc))
+    print "total [%d] target term" %(len(sVoc))
     return sVoc
 
 def FilterWord2VecModel(InName,OutName,sVoc):
@@ -42,8 +45,11 @@ def FilterWord2VecModel(InName,OutName,sVoc):
     '''
     cnt = 0
     LineCnt = 0
+    
     for line in open(InName):
         LineCnt += 1
+        if 0 == (LineCnt % 1000):
+            print 'first round [%d] line' %(LineCnt)
         if 1 == LineCnt:
             continue
         word = line.split()[0]
@@ -55,6 +61,8 @@ def FilterWord2VecModel(InName,OutName,sVoc):
     LineCnt = 0
     for line in open(InName):
         LineCnt += 1
+        if 0 == (LineCnt % 1000):
+            print 'second round [%s] line' %(LineCnt)
         if 1 == LineCnt:
             Dim = line.strip().split()[-1]
             print >>out, '%d\t%s' %(cnt,Dim)

@@ -16,6 +16,7 @@ q-doc svm style output
 
 import site
 
+
 site.addsitedir('/bos/usr0/cx/PyCode/cxPyLib')
 site.addsitedir('/bos/usr0/cx/PyCode/GoogleAPI')
 site.addsitedir('/bos/usr0/cx/PyCode/EmbeddingForIR')
@@ -31,7 +32,7 @@ from IndriSearch.IndriSearchCenter import IndriSearchCenterC
 from LeToRGivenFeatureExtractor import LeToRGivenFeatureExtractorC
 from EmbeddingTermPairFeatureExtractor import EmbeddingTermPairFeatureExtractorC
 from LeToR.LeToRDataBase import LeToRDataBaseC
-
+from AdhocEva.AdhocQRel import AdhocQRelC
 
 
 class LeToRFeatureExtractCenterC(cxBaseC):
@@ -47,6 +48,8 @@ class LeToRFeatureExtractCenterC(cxBaseC):
         self.Searcher = IndriSearchCenterC()
         self.GivenFeatureExtractor = LeToRGivenFeatureExtractorC()
         self.EmbTermPairFeatureExtractor = EmbeddingTermPairFeatureExtractorC()
+        self.QRelCenter = AdhocQRelC()
+        self.QRelIn = ""
         
     
     def SetConf(self, ConfIn):
@@ -54,6 +57,9 @@ class LeToRFeatureExtractCenterC(cxBaseC):
         self.Word2VecInName = self.conf.GetConf('word2vecin')
         
         self.lFeatureGroup = self.conf.GetConf('featuregroup')
+        
+        self.QRelIn = self.conf.GetConf('qrel')
+        self.QRelCenter.Load(self.QRelIn)
         if type(self.lFeatureGroup) != list:
             self.lFeatureGroup = [self.lFeatureGroup]
             
@@ -70,7 +76,7 @@ class LeToRFeatureExtractCenterC(cxBaseC):
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
-        print 'word2vecin\nfeaturegroup givenfeature|termpairemb'
+        print 'word2vecin\nfeaturegroup givenfeature|termpairemb\nqrel'
         LeToRGivenFeatureExtractorC.ShowConf()
         EmbeddingTermPairFeatureExtractorC.ShowConf()
         IndriSearchCenterC.ShowConf()
@@ -78,6 +84,8 @@ class LeToRFeatureExtractCenterC(cxBaseC):
     def Prepare(self):
         if self.Prepared:
             return
+        
+        
         
         logging.info('start load word2vec input')
         self.Word2VecModel = gensim.models.Word2Vec.load_word2vec_format(self.Word2VecInName)
@@ -109,6 +117,10 @@ class LeToRFeatureExtractCenterC(cxBaseC):
     
     
     def PipeLineRun(self,QInName,OutName):
+        '''
+        will make a feature hash myself... It should be OK right?
+        '''
+        hFeatureName = {}
         self.Prepare()
         lLines = open(QInName).read().splitlines()
         lQidQuery = [line.split('\t') for line in lLines]
@@ -124,11 +136,18 @@ class LeToRFeatureExtractCenterC(cxBaseC):
                 LTRData.DocNo = doc.DocNo
                 LTRData.hFeature = hFeature
                 
+                LTRData.score = self.QRelCenter.GetScore(qid, doc.DocNo)
+                hFeatureName = LTRData.HashFeatureName(hFeatureName)
                 print >>out,LTRData.dumps()
                 
             logging.info('qid [%s] extracted',qid)
             
         out.close()
+        
+        NameOut = open(OutName + '_FeatureName','w')
+        for name,Id in hFeatureName.items():
+            print >>NameOut,'%d\t%s' %(Id,name)
+        NameOut.close()
         logging.info('finished')
         return
     

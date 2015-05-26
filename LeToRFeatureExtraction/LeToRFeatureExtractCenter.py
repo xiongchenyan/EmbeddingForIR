@@ -73,6 +73,7 @@ class LeToRFeatureExtractCenterC(cxBaseC):
         print 'word2vecin\nfeaturegroup givenfeature|termpairemb'
         LeToRGivenFeatureExtractorC.ShowConf()
         EmbeddingTermPairFeatureExtractorC.ShowConf()
+        IndriSearchCenterC.ShowConf()
         
     def Prepare(self):
         if self.Prepared:

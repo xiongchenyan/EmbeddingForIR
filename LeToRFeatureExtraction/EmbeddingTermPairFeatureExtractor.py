@@ -71,8 +71,9 @@ class EmbeddingTermPairFeatureExtractorC(EmbeddingFeatureExtractorC):
         for field in self.lDocField:
             lTerm = doc.GetField(field).lower().split()
             lDVec = [VectorC(list(Word2VecModel[term])) for term in lTerm if term in Word2VecModel]
-            if len(lDVec) != len(lTerm):
-                logging.warn('doc [%s][%s] only [%d/%d] found in word2vec',doc.DocNo,field,len(lDVec),len(lTerm))
+            lNonStopTerm = [term for term in lTerm if not (term == '[OOV]')]
+            if len(lDVec) != len(lNonStopTerm):
+                logging.warn('doc [%s][%s] only [%d/%d] found in word2vec',doc.DocNo,field,len(lDVec),len(lNonStopTerm))
             for SimMetric in self.lSimMetric:
                 for MergeMetric in self.lMergeMetric:
                     score = self.CalcPairWiseSim(lQVec,lDVec,SimMetric,MergeMetric)

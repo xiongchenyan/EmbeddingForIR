@@ -66,7 +66,7 @@ class EmbeddingTermPairFeatureExtractorC(EmbeddingFeatureExtractorC):
         hFeature = {}
         lQVec = self.FetchQTermEmbedding(query, Word2VecModel)
         if len(lQVec) != len(query.strip()):
-            logging.warn('query [%s] only [%d/%d] found in word2vec',query,len(lQVec),len(query.strip()))
+            logging.warn('query [%s] only [%d/%d] found in word2vec',query,len(lQVec),len(query.strip().split()))
         
         for field in self.lDocField:
             lTerm = doc.GetField(field).lower().split()

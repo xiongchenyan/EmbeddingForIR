@@ -75,7 +75,7 @@ class LeToRFeatureExtractCenterC(cxBaseC):
         
     def Prepare(self):
         if self.Prepared:
-            continue
+            return
         
         logging.info('start load word2vec input')
         self.Word2VecModel = gensim.models.Word2Vec.load_word2vec_format(self.Word2VecInName)

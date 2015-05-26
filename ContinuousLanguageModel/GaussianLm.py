@@ -49,6 +49,53 @@ class GaussianLmC(object):
         logging.debug('gaussian lm constructed')
         return True
     
+    def SequentialConstructWithTermWeights(self,lTerm,Word2VecModel,lWeights):
+        lTerm = [term.lower() for term in lTerm]
+        
+        '''
+        get mean first
+        '''
+        Sum = None
+        
+        lInUse = [item for item in zip(lTerm,lWeights) if item[0] in Word2VecModel]
+        lInUseTerm = [item[0] for item in lInUse]
+        lInUseWeight = [item[1] for item in lInUse]
+        WTotal = sum(lInUseWeight)
+        if 0 == WTotal:
+            return
+        for term in lInUseTerm:
+            vec = Word2VecModel[term]
+            if Sum == None:
+                Sum = vec
+                continue
+            Sum += vec
+        
+        self.Mu = Sum / float(WTotal)
+        
+        logging.info('sequential gaussian lm contruction for [%f] totol weight mean done', WTotal)
+        
+        CovSum = None
+        for term in lInUseTerm:
+            vec = Word2VecModel[term]
+            Diff = np.matrix(vec - self.Mu)
+            ThisCov = Diff.T * Diff
+            
+            if CovSum == None:
+                CovSum = ThisCov
+                continue
+            CovSum += ThisCov
+            
+        self.Sigma = CovSum / float(WTotal)
+        self.Inv = np.linalg.inv(self.Sigma)
+        logging.info('sequential gaussian lm contruction for [%f] totol weight Sigma done', WTotal)
+        return True
+        
+            
+            
+        
+        
+    
+    
     def pdf(self,x,SmoothMethod=None,PriorDis = None):
         
         if SmoothMethod == None:

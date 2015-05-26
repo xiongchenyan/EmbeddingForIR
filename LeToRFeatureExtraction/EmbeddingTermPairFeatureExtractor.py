@@ -101,7 +101,8 @@ class EmbeddingTermPairFeatureExtractorC(EmbeddingFeatureExtractorC):
                 if MergeMetric == 'mean':
                     score += ThisScore
         if MergeMetric == 'mean':
-            score /= float(cnt)
+            if cnt != 0:
+                score /= float(cnt)
         return score
                     
                 

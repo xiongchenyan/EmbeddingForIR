@@ -28,7 +28,7 @@ class KernelDensityLmC(object):
             
     def Init(self):
         self.kde = KernelDensity()
-        self.lBandWidth=np.logspace(-1, 1, 20)
+        self.lBandWidth=np.logspace(-2, 0, 20)
         self.lX = []
         
     def Construct(self,lData,Word2VecModel=None):

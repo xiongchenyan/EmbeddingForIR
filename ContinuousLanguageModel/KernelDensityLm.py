@@ -32,7 +32,7 @@ class KernelDensityLmC(object):
         
     def Construct(self,lData,Word2VecModel=None):
         if [] == lData:
-            continue
+            return
         if type(lData) == str:
             self.lX = [Word2VecModel[term] for term in lData if term in Word2VecModel]
         else:  #then it should be vectors already

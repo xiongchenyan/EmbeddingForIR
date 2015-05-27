@@ -39,8 +39,8 @@ class EmbeddingLmFeatureExtractorC(EmbeddingFeatureExtractorC):
         only using kde with default kernel (Gaussian) and CVed bandwidth per doc
         '''
         
-        lQVec = [Word2VecModel(qterm) for qterm in  query.split() if qterm in Word2VecModel]
-        lDVec = [Word2VecModel(term) for term in doc.GetContent().split() if term in Word2VecModel]
+        lQVec = [Word2VecModel[qterm] for qterm in  query.split() if qterm in Word2VecModel]
+        lDVec = [Word2VecModel[term] for term in doc.GetContent().split() if term in Word2VecModel]
         
         hFeature = {}
         

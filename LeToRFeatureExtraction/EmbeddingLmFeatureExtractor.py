@@ -81,6 +81,7 @@ class EmbeddingLmFeatureExtractorC(EmbeddingFeatureExtractorC):
         lPCAVec = pca.fit_transform(lVec)
         lPCAQVec = lPCAVec[:len(lQVec)]
         lPCADVec = lPCAVec[len(lQVec):]
+        logging.debug('qvec and doc word2vec pca to [%d] dim',self.PCADim)
         return lPCAQVec,lPCADVec
         
         

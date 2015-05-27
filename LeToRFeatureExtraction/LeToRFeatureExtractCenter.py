@@ -117,7 +117,7 @@ class LeToRFeatureExtractCenterC(cxBaseC):
         
         
         hFeature = {}
-        
+        logging.debug('extracting for [%s][%s]',qid,doc.DocNo)
         if 'givenfeature' in self.lFeatureGroup:
             hFeature.update(self.GivenFeatureExtractor.Extract(qid, query, doc))
             logging.debug('given feature extracted')

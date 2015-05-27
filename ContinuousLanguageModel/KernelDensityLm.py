@@ -17,7 +17,7 @@ import numpy as np
 from sklearn.neighbors import KernelDensity
 from sklearn.grid_search import GridSearchCV
 import logging
-
+import json
 class KernelDensityLmC(object):
     def __init__(self,lData = [],Word2VecModel = None):
         self.Init()
@@ -27,7 +27,7 @@ class KernelDensityLmC(object):
             
     def Init(self):
         self.kde = KernelDensity()
-        self.lBandWidth=np.logspace(-10, 10, 20)
+        self.lBandWidth=np.logspace(-1, 1, 20)
         self.lX = []
         
     def Construct(self,lData,Word2VecModel=None):
@@ -43,7 +43,9 @@ class KernelDensityLmC(object):
         
     def CVForBestKde(self):
         params = {'bandwidth':self.lBandWidth}
+        logging.debug('cv bandwidth from [%s]',json.dumps(self.lBandWidth))
         grid = GridSearchCV(KernelDensity(), params)
+        logging.debug('fitting on [%d] vector',len(self.lX))
         grid.fit(self.lX)
         logging.info('best bandwidth = [%f]',grid.best_estimator_.bandwidth)
         return grid.best_estimator_

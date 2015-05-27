@@ -19,10 +19,10 @@ from sklearn.grid_search import GridSearchCV
 import logging
 
 class KernelDensityLmC(object):
-    def __init__(self,lTerm = [],Word2VecModel = None):
+    def __init__(self,lData = [],Word2VecModel = None):
         self.Init()
-        if ([] != lTerm) & (None != Word2VecModel):
-            self.Construct(lTerm,Word2VecModel)
+        if ([] != lData):
+            self.Construct(lData,Word2VecModel)
             
             
     def Init(self):
@@ -30,10 +30,15 @@ class KernelDensityLmC(object):
         self.lBandWidth=np.logspace(-10, 10, 20)
         self.lX = []
         
-    def Construct(self,lTerm,Word2VecModel):
-        self.lX = [Word2VecModel[term] for term in lTerm if term in Word2VecModel]
-        
+    def Construct(self,lData,Word2VecModel=None):
+        if [] == lData:
+            continue
+        if type(lData) == str:
+            self.lX = [Word2VecModel[term] for term in lData if term in Word2VecModel]
+        else:  #then it should be vectors already
+            self.lX = lData
         self.kde = self.CVForBestKde()
+        logging.info('doc kde lm estimated')
         
         
     def CVForBestKde(self):

@@ -21,7 +21,7 @@ from cxBase.base import cxBaseC
 from cxBase.Vector import VectorC
 import logging
 import numpy as np
-
+from sklearn.decomposition import PCA
 from EmbeddingFeatureExtractor import EmbeddingFeatureExtractorC
 from ContinuousLanguageModel.KernelDensityLm import KernelDensityLmC
 
@@ -29,7 +29,11 @@ class EmbeddingLmFeatureExtractorC(EmbeddingFeatureExtractorC):
     def Init(self):
         EmbeddingFeatureExtractorC.Init(self)
         self.FeatureName = 'EmbLm'
-        
+        self.PCADim = 0
+    
+    def SetConf(self, ConfIn):
+        EmbeddingFeatureExtractorC.SetConf(self, ConfIn)
+        self.PCADim = int(self.conf.GetConf('pcadim', self.PCADim))    
         
     def Extract(self, qid, query, doc, Word2VecModel):
         EmbeddingFeatureExtractorC.Extract(self, qid, query, doc, Word2VecModel)
@@ -41,6 +45,16 @@ class EmbeddingLmFeatureExtractorC(EmbeddingFeatureExtractorC):
         
         lQVec = [Word2VecModel[qterm] for qterm in  query.split() if qterm in Word2VecModel]
         lDVec = [Word2VecModel[term] for term in doc.GetContent().split() if term in Word2VecModel]
+        
+        if [] == lQVec:
+            logging.warn('[%s][%s] has no word2vec',qid,query)
+            return {}
+        if [] == lDVec:
+            logging.warn('[%s][%s] has no word2vec',qid,doc.DocNo)
+            return {}
+        
+        if 0 != self.PCADim:
+            lQVec,lDVec = self.PCAVec(lQVec,lDVec)
         
         hFeature = {}
         
@@ -60,6 +74,14 @@ class EmbeddingLmFeatureExtractorC(EmbeddingFeatureExtractorC):
         score = np.mean(lScore)
         hFeature = {FeatureName:score}
         return hFeature
+    
+    def PCAVec(self,lQVec,lDVec):
+        lVec = lQVec + lDVec
+        pca = PCA(n_components=self.PCADim, whiten=False)
+        lPCAVec = pca.fit_transform(lVec)
+        lPCAQVec = lPCAVec[:len(lQVec)]
+        lPCADVec = lPCAVec[len(lQVec):]
+        return lPCAQVec,lPCADVec
         
         
         

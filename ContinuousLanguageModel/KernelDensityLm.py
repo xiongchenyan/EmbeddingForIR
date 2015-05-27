@@ -18,6 +18,7 @@ from sklearn.neighbors import KernelDensity
 from sklearn.grid_search import GridSearchCV
 import logging
 import json
+
 class KernelDensityLmC(object):
     def __init__(self,lData = [],Word2VecModel = None):
         self.Init()

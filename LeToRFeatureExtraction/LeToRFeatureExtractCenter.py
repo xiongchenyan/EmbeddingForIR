@@ -31,6 +31,9 @@ import json
 from IndriSearch.IndriSearchCenter import IndriSearchCenterC
 from LeToRGivenFeatureExtractor import LeToRGivenFeatureExtractorC
 from EmbeddingTermPairFeatureExtractor import EmbeddingTermPairFeatureExtractorC
+from EmbeddingLmFeatureExtractor import EmbeddingLmFeatureExtractorC
+
+
 from LeToR.LeToRDataBase import LeToRDataBaseC
 from AdhocEva.AdhocQRel import AdhocQRelC
 
@@ -48,6 +51,7 @@ class LeToRFeatureExtractCenterC(cxBaseC):
         self.Searcher = IndriSearchCenterC()
         self.GivenFeatureExtractor = LeToRGivenFeatureExtractorC()
         self.EmbTermPairFeatureExtractor = EmbeddingTermPairFeatureExtractorC()
+        self.EmbLmFeatureExtractor = EmbeddingLmFeatureExtractorC()
         self.QRelCenter = AdhocQRelC()
         self.QRelIn = ""
         
@@ -71,14 +75,19 @@ class LeToRFeatureExtractCenterC(cxBaseC):
         if 'termpairemb' in self.lFeatureGroup:
             self.EmbTermPairFeatureExtractor.SetConf(ConfIn)
             
+        if 'emblm' in self.lFeatureGroup:
+            self.EmbLmFeatureExtractor.SetConf(ConfIn)
+            
+            
         return True
     
     @staticmethod
     def ShowConf():
         cxBaseC.ShowConf()
-        print 'word2vecin\nfeaturegroup givenfeature|termpairemb\nqrel'
+        print 'word2vecin\nfeaturegroup givenfeature|termpairemb\nqrel\nemblm'
         LeToRGivenFeatureExtractorC.ShowConf()
         EmbeddingTermPairFeatureExtractorC.ShowConf()
+        EmbeddingLmFeatureExtractorC.ShowConf()
         IndriSearchCenterC.ShowConf()
         
     def Prepare(self):
@@ -90,8 +99,12 @@ class LeToRFeatureExtractCenterC(cxBaseC):
         logging.info('start load word2vec input')
         self.Word2VecModel = gensim.models.Word2Vec.load_word2vec_format(self.Word2VecInName)
         logging.info('word2vec loaded')
-        self.GivenFeatureExtractor.Prepare()
-        self.EmbTermPairFeatureExtractor.Prepare()
+        if 'givenfeature' in self.lFeatureGroup:
+            self.GivenFeatureExtractor.Prepare()
+        if 'termpairemb' in self.lFeatureGroup:
+            self.EmbTermPairFeatureExtractor.Prepare()
+        if 'emblm' in self.lFeatureGroup:
+            self.EmbLmFeatureExtractor.Prepare()
         
         self.Prepared = True
         return
@@ -112,6 +125,10 @@ class LeToRFeatureExtractCenterC(cxBaseC):
         if 'termpairemb' in self.lFeatureGroup:
             hFeature.update(self.EmbTermPairFeatureExtractor.Extract(qid, query, doc, self.Word2VecModel))
             logging.debug('termpairemb feature extracted')
+            
+        if 'emblm' in self.lFeatureGroup:
+            hFeature.update(self.EmbLmFeatureExtractor.Extract(qid, query, doc, self.Word2VecModel))
+            logging.debug('emblm feature extracted')
             
         return hFeature
     

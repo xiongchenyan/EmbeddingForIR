@@ -43,7 +43,7 @@ class KernelDensityLmC(object):
         
     def CVForBestKde(self):
         params = {'bandwidth':self.lBandWidth}
-        logging.debug('cv bandwidth from [%s]',json.dumps(self.lBandWidth))
+#         logging.debug('cv bandwidth from [%s]',json.dumps(self.lBandWidth))
         grid = GridSearchCV(KernelDensity(), params)
         logging.debug('fitting on [%d] vector',len(self.lX))
         grid.fit(self.lX)

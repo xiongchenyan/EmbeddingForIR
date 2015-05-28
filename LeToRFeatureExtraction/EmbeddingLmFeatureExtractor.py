@@ -24,12 +24,14 @@ import numpy as np
 from sklearn.decomposition import PCA
 from EmbeddingFeatureExtractor import EmbeddingFeatureExtractorC
 from ContinuousLanguageModel.KernelDensityLm import KernelDensityLmC
+import random
 
 class EmbeddingLmFeatureExtractorC(EmbeddingFeatureExtractorC):
     def Init(self):
         EmbeddingFeatureExtractorC.Init(self)
         self.FeatureName = 'EmbLm'
         self.PCADim = 0
+        self.MaxDocLen = 5000
     
     def SetConf(self, ConfIn):
         EmbeddingFeatureExtractorC.SetConf(self, ConfIn)
@@ -43,8 +45,17 @@ class EmbeddingLmFeatureExtractorC(EmbeddingFeatureExtractorC):
         only using kde with default kernel (Gaussian) and CVed bandwidth per doc
         '''
         
-        lQVec = [Word2VecModel[qterm] for qterm in  query.split() if qterm in Word2VecModel]
-        lDVec = [Word2VecModel[term] for term in doc.GetContent().split() if term in Word2VecModel]
+        lQTerm = query.split()
+        lDocTerm = doc.GetContent().split()
+        
+        if len(lDocTerm) > self.MaxDocLen:
+            logging.warn('doc too long [%s][%d], sample [%d] term',doc.DocNo,len(lDocTerm), self.MaxDocLen)
+            random.shuffle(lDocTerm)
+            lDocTerm = lDocTerm[:self.MaxDocLen]
+        
+        
+        lQVec = [Word2VecModel[qterm] for qterm in  lQTerm if qterm in Word2VecModel]
+        lDVec = [Word2VecModel[term] for term in lDocTerm if term in Word2VecModel]
         
         if [] == lQVec:
             logging.warn('[%s][%s] has no word2vec',qid,query)

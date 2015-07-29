@@ -16,8 +16,7 @@ Also support pipeline run, and with configuration
 
 import site
 import logging
-from ContinuousLanguageModel.GaussianLm import GaussianLmC
-from ContinuousLanguageModel.KernelDensityLm import KernelDensityLmC
+
 
 site.addsitedir('/bos/usr0/cx/PyCode/cxPyLib')
 site.addsitedir('/bos/usr0/cx/PyCode/EmbeddingForIR')
@@ -26,6 +25,9 @@ from cxBase.base import cxBaseC
 from AdhocEva.AdhocEva import AdhocEvaC
 from AdhocEva.AdhocMeasure import AdhocMeasureC
 from IndriSearch.IndriSearchCenter import IndriSearchCenterC
+from ContinuousLanguageModel.GaussianLm import GaussianLmC
+from ContinuousLanguageModel.KernelDensityLm import KernelDensityLmC
+
 
 class ContinuousLmRankingEvaluatorC(cxBaseC):
     

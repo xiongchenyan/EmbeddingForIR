@@ -18,20 +18,18 @@ from sklearn.neighbors import KernelDensity
 from sklearn.grid_search import GridSearchCV
 import logging
 import json
+from ContinuousLanguageModel.ContinuousLm import ContinuousLmC
 
-class KernelDensityLmC(object):
-    def __init__(self,lData = [],Word2VecModel = None):
-        self.Init()
-        if ([] != lData):
-            self.Construct(lData,Word2VecModel)
+class KernelDensityLmC(ContinuousLmC):
             
             
     def Init(self):
+        ContinuousLmC.Init(self)
         self.kde = KernelDensity()
         self.lBandWidth=np.logspace(-2, 0, 20)
         self.lX = []
         
-    def Construct(self,lData,Word2VecModel=None):
+    def Construct(self,lData,Word2VecModel):
         if [] == lData:
             return
         if type(lData) == str:

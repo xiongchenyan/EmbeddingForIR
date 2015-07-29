@@ -17,16 +17,15 @@ What's my output:
 import numpy as np
 from scipy.stats import multivariate_normal
 
+from ContinuousLanguageModel.ContinuousLm import ContinuousLmC
 import logging
 import sys
-class GaussianLmC(object):
-    def __init__(self,lTerm = [],Word2VecModel = None):
-        self.Init()
-        if ([] != lTerm) & (None != Word2VecModel):
-            self.Construct(lTerm, Word2VecModel)
+
+class GaussianLmC(ContinuousLmC):
         
     def Init(self):
         #main parameters
+        ContinuousLmC.Init(self)
         self.Mu = np.array()
         self.Sigma = np.matrix()
         self.Inv = np.matrix()

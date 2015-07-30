@@ -39,7 +39,7 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
         
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
-        
+        self.Searcher.SetConf(ConfIn)
         self.Evaluator.SetConf(ConfIn)
         
     @classmethod

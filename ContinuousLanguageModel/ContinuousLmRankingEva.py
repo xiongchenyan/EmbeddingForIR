@@ -27,7 +27,8 @@ from AdhocEva.AdhocMeasure import AdhocMeasureC
 from IndriSearch.IndriSearchCenter import IndriSearchCenterC
 from ContinuousLanguageModel.GaussianLm import GaussianLmC
 from ContinuousLanguageModel.KernelDensityLm import KernelDensityLmC
-
+import gensim
+import numpy as np
 
 class ContinuousLmRankingEvaluatorC(cxBaseC):
     
@@ -35,18 +36,26 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
         cxBaseC.Init(self)
         self.Evaluator = AdhocEvaC()
         self.Searcher = IndriSearchCenterC()
+        self.Word2VecInName = ""
+        self.Word2VecModel = None
+        
         
         
     def SetConf(self, ConfIn):
         cxBaseC.SetConf(self, ConfIn)
         self.Searcher.SetConf(ConfIn)
         self.Evaluator.SetConf(ConfIn)
+        self.Word2VecInName = self.conf.GetConf('word2vecin')
+        logging.info('start load word2vec input')
+        self.Word2VecModel = gensim.models.Word2Vec.load_word2vec_format(self.Word2VecInName)
+        logging.info('word2vec loaded')
+        
         
     @classmethod
     def ShowConf(cls):
         cxBaseC.ShowConf()
         print    cls.__name__
-        
+        print 'word2vecin'
         IndriSearchCenterC.ShowConf()
         AdhocEvaC.ShowConf()
         
@@ -68,7 +77,7 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
     
     def FormLm(self,doc,cLmClass):
         lTerm = doc.GetContent().split()
-        return cLmClass(lTerm)
+        return cLmClass(lTerm,self.Word2VecModel)
     
     
     def FormPerQData(self,qid,query,cLmClass):

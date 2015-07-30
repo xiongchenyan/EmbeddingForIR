@@ -29,13 +29,10 @@ class KernelDensityLmC(ContinuousLmC):
         self.lBandWidth=np.logspace(-2, 0, 20)
         self.lX = []
         
-    def Construct(self,lData,Word2VecModel):
-        if [] == lData:
+    def Construct(self,lTerm,Word2VecModel):
+        if [] == lTerm:
             return
-        if type(lData) == str:
-            self.lX = [Word2VecModel[term] for term in lData if term in Word2VecModel]
-        else:  #then it should be vectors already
-            self.lX = lData
+        self.lX = [Word2VecModel[term] for term in lTerm if term in Word2VecModel]
         self.kde = self.CVForBestKde()
         logging.info('doc kde lm estimated')
         

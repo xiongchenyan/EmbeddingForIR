@@ -28,6 +28,7 @@ from IndriSearch.IndriSearchCenter import IndriSearchCenterC
 from ContinuousLanguageModel.GaussianLm import GaussianLmC
 from ContinuousLanguageModel.KernelDensityLm import KernelDensityLmC
 from ContinuousLanguageModel.SummationLm import SummationLmC
+from ContinuousLanguageModel.RandomLm import RandLmC
 import gensim
 import numpy as np
 
@@ -148,6 +149,9 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
         if cLmName == 'sum':
             logging.info('use raw sum')
             return SummationLmC
+        
+        if cLmName == 'rand':
+            logging.info('use rand')
         
         raise NotImplementedError('please choose continuous language model from gaussian|kde')
     

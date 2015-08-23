@@ -11,7 +11,7 @@ What's my output:
 '''
 from cxBase.Conf import cxConfC
 import math
-
+import logging
 
 class ContinuousLmC(object):
     def __init__(self,lTerm = [],Word2VecModel = None):
@@ -34,7 +34,12 @@ class ContinuousLmC(object):
     
     
     def LogPdf(self,x):
-        return max(self.MinLogPdf,math.log(self.pdf(x)))
+        
+        Prob = self.pdf(x)
+        if Prob <= 0:
+            logging.warn('pdf %f < 0',Prob)
+            Prob = math.exp(self.MinLogPdf)
+        return math.log(Prob)
     
     def InferenceQuery(self,query,Word2VecModel):
         lQTerm = query.split()

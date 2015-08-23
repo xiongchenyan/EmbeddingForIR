@@ -44,6 +44,14 @@ class GaussianLmC(ContinuousLmC):
         mWord2Vec = np.array(lVec)
         self.Mu = np.mean(mWord2Vec,0)
         self.Sigma = np.cov(mWord2Vec.T)
+        '''
+        if not enough data, only keep diagonal matrix
+        '''
+        if len(lTerm) <= self.Mu.shape[0]:
+            self.Sigma *= np.diag(np.ones(self.Mu.shape[0]))
+            logging.warn('not enough observation, only keep cov diag value')
+            
+        
         self.Inv = np.linalg.inv(self.Sigma)
         logging.debug('gaussian lm constructed')
         logging.debug('mean: %s',np.array2string(self.Mu))

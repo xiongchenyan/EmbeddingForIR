@@ -27,6 +27,7 @@ from AdhocEva.AdhocMeasure import AdhocMeasureC
 from IndriSearch.IndriSearchCenter import IndriSearchCenterC
 from ContinuousLanguageModel.GaussianLm import GaussianLmC
 from ContinuousLanguageModel.KernelDensityLm import KernelDensityLmC
+from ContinuousLanguageModel.SummationLm import SummationLmC
 import gensim
 import numpy as np
 
@@ -59,12 +60,12 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
         IndriSearchCenterC.ShowConf()
         AdhocEvaC.ShowConf()
         
-    def EvaluatePerQ(self,qid,query,lDoc,lLm):
+    def ReRankAndEvaPerQ(self,qid,query,lDoc,lLm):
         
-        lReRankDocNo = self.FormNewRank(query,lDoc,lLm)
+        lReRankDocNo,lScore = self.FormNewRank(query,lDoc,lLm)
         EvaRes = self.Evaluator.EvaluatePerQ(qid, query, lReRankDocNo)
         logging.info('[%s][%s] result [%s]',qid,query,EvaRes.dumps())
-        return EvaRes
+        return EvaRes,lReRankDocNo,lScore
     
     def FormNewRank(self,query,lDoc,lLm):
         
@@ -77,7 +78,8 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
         lDocScore = zip(lDoc,lScore)
         lDocScore.sort(key=lambda item: item[1], reverse = True)
         lDocNo = [item[0].DocNo for item in lDocScore]
-        return lDocNo
+        lScore = [item[1] for item in lDocScore]
+        return lDocNo,lScore
     
     
     def FormLm(self,doc,cLmClass):
@@ -103,11 +105,18 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
         
         lEvaRes = []
         
+        RankOut = open(OutName + '_rank','w')
+        
         logging.info('start evaluating...')
         for qid,query in lQidQuery:
             lDoc,lLm = self.FormPerQData(qid, query, cLmClass)
-            EvaRes = self.EvaluatePerQ(qid, query, lDoc, lLm)
+            EvaRes,lDocNo,lScore = self.ReRankAndEvaPerQ(qid, query, lDoc, lLm)
             lEvaRes.append(EvaRes)
+            
+            for i in range(len(lDocNo)):
+                print >> RankOut, qid + ' Q0 ' + lDocNo[i] + ' %d %f ContinusLm'%(i+1,lScore[i])
+        
+        RankOut.close()
             
         lEvaRes.append(AdhocMeasureC.AdhocMeasureMean(lEvaRes))
         lQid = [item[0] for item in lQidQuery] + ['mean']
@@ -136,6 +145,10 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
             logging.info('use kde lm')
             return KernelDensityLmC
         
+        if cLmName == 'sum':
+            logging.info('use raw sum')
+            return SummationLmC
+        
         raise NotImplementedError('please choose continuous language model from gaussian|kde')
     
     
@@ -144,7 +157,7 @@ if __name__=='__main__':
     import sys
     if 2 != len(sys.argv):
         ContinuousLmRankingEvaluatorC.ShowConf()
-        print 'in\nout\nlmname gaussian|kde'
+        print 'in\nout\nlmname gaussian|kde|sum'
         sys.exit()
         
     root = logging.getLogger()

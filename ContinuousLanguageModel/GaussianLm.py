@@ -43,7 +43,7 @@ class GaussianLmC(ContinuousLmC):
         lVec = [Word2VecModel[term] for term in lTerm if term in Word2VecModel]
         mWord2Vec = np.array(lVec)
         self.Mu = np.mean(mWord2Vec,0)
-        self.Sigma = np.cov(mWord2Vec.T)
+        self.Sigma = np.cov(mWord2Vec.T) + np.diag(np.ones(self.Mu.shape[0])* 0.01)
         '''
         if not enough data, only keep diagonal matrix
         '''

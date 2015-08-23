@@ -26,14 +26,15 @@ class KernelDensityLmC(ContinuousLmC):
     def Init(self):
         ContinuousLmC.Init(self)
         self.kde = KernelDensity()
-        self.lBandWidth=np.logspace(-2, 0, 5)
+        self.lBandWidth=np.logspace(-2, 0, 20)
         self.lX = []
         
     def Construct(self,lTerm,Word2VecModel):
         if [] == lTerm:
             return
         self.lX = [Word2VecModel[term] for term in lTerm if term in Word2VecModel]
-        self.kde = self.CVForBestKde()
+#         self.kde = self.CVForBestKde()
+        self.kde = KernelDensity(kernel='gaussian',bandwidth=0.1).fit(self.lX)
         logging.info('doc kde lm estimated')
         
         

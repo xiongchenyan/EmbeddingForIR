@@ -26,9 +26,9 @@ class GaussianLmC(ContinuousLmC):
     def Init(self):
         #main parameters
         ContinuousLmC.Init(self)
-        self.Mu = np.array()
-        self.Sigma = np.matrix()
-        self.Inv = np.matrix()
+        self.Mu = None
+        self.Sigma = None
+        self.Inv = None
         #parameters for smoothing
         self.PriorN = 1
         self.MixtureLambda = 0.5

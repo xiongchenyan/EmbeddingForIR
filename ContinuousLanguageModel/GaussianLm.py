@@ -100,29 +100,34 @@ class GaussianLmC(ContinuousLmC):
         if SmoothMethod == None:
             if len(self.Mu) == 0:
                 return 0
-            
-            return multivariate_normal(x,mean=self.Mu,cov=self.Sigma)
+            model = multivariate_normal(mean=self.Mu,cov=self.Sigma)
+            return model.pdf(x) 
         
-        if SmoothMethod == 'mixture':
-            return self.MixtureSmoothPdf(x,PriorDis)
-        
-        if SmoothMethod == 'prior':
-            return self.PriorSmoothPdf(x,PriorDis)
+#         if SmoothMethod == 'mixture':
+#             return self.MixtureSmoothPdf(x,PriorDis)
+#         
+#         if SmoothMethod == 'prior':
+#             return self.PriorSmoothPdf(x,PriorDis)
         
         logging.ERROR('smooth method unknow [%s]',SmoothMethod)
         sys.exit()
         
-        
-    def MixtureSmoothPdf(self,x,PriorDis):
-        
-        return self.MixtureLambda * multivariate_normal(x,mean=PriorDis.Mu,cov = PriorDis.Sigma) \
-            + (1-self.MixtureLambda) * multivariate_normal(x,mean=self.Mu,cov=self.Sigma)
-            
-    def PriorSmoothPdf(self,x,PriorDis):
-        SigmaPos = np.linalg.inv(PriorDis.Inv + self.PriorN * self.Inv)
-        MuPos = SigmaPos *  (PriorDis.Inv * (np.matrix(PriorDis.Mu).T) + self.PriorN * self.Inv * (np.matrix(self.Mu).T))
-        
-        return multivariate_normal(x,mean=MuPos,cov=SigmaPos)
+      
+      
+    '''
+      depreciated
+      TBD: fix wrong calling of method of multivariate_normal
+    '''  
+#     def MixtureSmoothPdf(self,x,PriorDis):
+#         
+#         return self.MixtureLambda * multivariate_normal(x,mean=PriorDis.Mu,cov = PriorDis.Sigma) \
+#             + (1-self.MixtureLambda) * multivariate_normal(x,mean=self.Mu,cov=self.Sigma)
+#             
+#     def PriorSmoothPdf(self,x,PriorDis):
+#         SigmaPos = np.linalg.inv(PriorDis.Inv + self.PriorN * self.Inv)
+#         MuPos = SigmaPos *  (PriorDis.Inv * (np.matrix(PriorDis.Mu).T) + self.PriorN * self.Inv * (np.matrix(self.Mu).T))
+#         
+#         return multivariate_normal(x,mean=MuPos,cov=SigmaPos)
         
         
         

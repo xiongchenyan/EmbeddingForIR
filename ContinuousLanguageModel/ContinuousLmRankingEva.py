@@ -161,7 +161,7 @@ if __name__=='__main__':
     import sys
     if 2 != len(sys.argv):
         ContinuousLmRankingEvaluatorC.ShowConf()
-        print 'in\nout\nlmname gaussian|kde|sum'
+        print 'in\nout\nlmname gaussian|kde|sum|rand'
         sys.exit()
         
     root = logging.getLogger()

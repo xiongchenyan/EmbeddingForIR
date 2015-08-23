@@ -156,10 +156,12 @@ if __name__=='__main__':
     
     conf = cxConfC(sys.argv[1])
     QInName = conf.GetConf('in')
-    OutName = conf.GetConf('out')
-    cLmName = conf.GetConf('lmname')
+    lOutName = conf.GetConf('out',[])
+    lLmName = conf.GetConf('lmname',[])
     
-    Evaluator.PipeEva(QInName, OutName, cLmName)
+    
+    for OutName,cLmName in zip(lOutName,lLmName): 
+        Evaluator.PipeEva(QInName, OutName, cLmName)
         
         
         

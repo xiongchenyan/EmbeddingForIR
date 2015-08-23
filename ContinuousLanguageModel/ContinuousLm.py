@@ -36,11 +36,16 @@ class ContinuousLmC(object):
     def LogPdf(self,x):
         return max(self.MinLogPdf,math.log(self.pdf(x)))
     
-    def InferenceQuery(self,query):
+    def InferenceQuery(self,query,Word2VecModel):
         lQTerm = query.split()
         if [] == lQTerm:
             return self.MinLogPdf
-        
-        score = sum([self.LogPdf(QTerm) for QTerm in lQTerm]) / float(len(lQTerm))
+        lQX = [Word2VecModel[term] for term in lQTerm if term in Word2VecModel]
+        return self.InferenceQVec(lQX)
+    
+    def InferenceQVec(self,lQX):
+        if [] == lQX:
+            return self.MinLogPdf
+        score = sum([self.LogPdf(x) for x in lQX]) / float(len(lQX))
         
         return score

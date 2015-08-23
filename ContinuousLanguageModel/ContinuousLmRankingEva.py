@@ -68,7 +68,12 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
     
     def FormNewRank(self,query,lDoc,lLm):
         
-        lScore = [lm.InferenceQuery(query) for lm in lLm]
+        lQTerm = query.split()
+        if [] == lQTerm:
+            return self.MinLogPdf
+        lQX = [self.Word2VecModel[term] for term in lQTerm if term in self.Word2VecModel]
+        
+        lScore = [lm.InferenceQVec(lQX) for lm in lLm]
         lDocScore = zip(lDoc,lScore)
         lDocScore.sort(key=lambda item: item[1], reverse = True)
         lDocNo = [item[0].DocNo for item in lDocScore]

@@ -41,11 +41,12 @@ class GaussianLmC(ContinuousLmC):
         '''
         lTerm = [term.lower() for term in lTerm]
         lVec = [Word2VecModel[term] for term in lTerm if term in Word2VecModel]
-        mWord2Vec = np.matrix(lVec)
-        self.Mu = np.array(np.mean(mWord2Vec,0))
+        mWord2Vec = np.array(lVec)
+        self.Mu = np.mean(mWord2Vec,0)
         self.Sigma = np.cov(mWord2Vec.T)
         self.Inv = np.linalg.inv(self.Sigma)
         logging.debug('gaussian lm constructed')
+        logging.debug('mean: %s',np.array2string(self.Mu))
         return True
     
     def SequentialConstructWithTermWeights(self,lTerm,Word2VecModel,lWeights):

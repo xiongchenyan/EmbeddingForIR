@@ -109,6 +109,7 @@ class GaussianLmC(ContinuousLmC):
         if SmoothMethod == None:
             if len(self.Mu) == 0:
                 return 0
+            logging.debug('build pdf func')
             model = multivariate_normal(mean=self.Mu,cov=self.Sigma)
             return model.pdf(x) 
         

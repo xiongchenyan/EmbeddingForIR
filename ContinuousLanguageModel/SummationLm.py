@@ -25,7 +25,7 @@ class SummationLmC(ContinuousLmC):
     def Init(self):
         #main parameters
         ContinuousLmC.Init(self)
-        self.Mu = np.array()
+        self.Mu = None
         #parameters for smoothing
         
         

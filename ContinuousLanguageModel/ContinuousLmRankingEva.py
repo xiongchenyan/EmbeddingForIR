@@ -115,7 +115,7 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
             lEvaRes.append(EvaRes)
             
             for i in range(len(lDocNo)):
-                print >> RankOut, qid + ' Q0 ' + lDocNo[i] + ' %d %f ContinusLm'%(i+1,lScore[i])
+                print >> RankOut, qid + ' Q0 ' + lDocNo[i] + ' %d %f %s'%(i+1,lScore[i],cLmName)
         
         RankOut.close()
             

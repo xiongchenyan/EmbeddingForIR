@@ -51,6 +51,8 @@ class ContinuousLmC(object):
     def InferenceQVec(self,lQX):
         if [] == lQX:
             return self.MinLogPdf
+        
+        
         score = sum([self.LogPdf(x) for x in lQX]) / float(len(lQX))
         
         return score

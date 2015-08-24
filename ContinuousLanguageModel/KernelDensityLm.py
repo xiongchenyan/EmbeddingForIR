@@ -49,6 +49,9 @@ class KernelDensityLmC(ContinuousLmC):
     
     
     def pdf(self,x):
+        return np.exp(self.kde.score(x))
+    
+    def LogPdf(self, x):
         return self.kde.score(x)
         
 

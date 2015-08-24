@@ -34,7 +34,7 @@ class KernelDensityLmC(ContinuousLmC):
             return
         self.lX = [Word2VecModel[term] for term in lTerm if term in Word2VecModel]
 #         self.kde = self.CVForBestKde()
-        self.kde = KernelDensity(kernel='gaussian',bandwidth=0.2).fit(self.lX)
+        self.kde = KernelDensity(kernel='gaussian',bandwidth=0.3).fit(self.lX)
 #         logging.debug('doc kde lm estimated')
         
         

@@ -152,6 +152,7 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
         
         if cLmName == 'rand':
             logging.info('use rand')
+            return RandLmC
         
         raise NotImplementedError('please choose continuous language model from gaussian|kde')
     

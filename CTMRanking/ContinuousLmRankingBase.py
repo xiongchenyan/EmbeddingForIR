@@ -157,7 +157,7 @@ class ContinuousLmRankingBaseC(cxBaseC):
             for QidQuery,EvaRes in zip(lQidQuery,lEvaRes):
                 print >>out, QidQuery[0] + '\t' + EvaRes.dumps()
         else:
-            print >>out, MeanRes.Err
+            print >>out, MeanRes.err
         out.close()
         logging.info('evaluation res %s',MeanRes.dumps())
         

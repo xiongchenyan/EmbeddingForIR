@@ -27,7 +27,8 @@ class ContinuousLmC(object):
     def Construct(self,lData,Word2VecModel):
         raise NotImplementedError('clm construct func not implemented')
         
-    
+    def SetPara(self,conf):
+        return
     
     def pdf(self,x):
         raise NotImplementedError('clm pdf func not implemented')

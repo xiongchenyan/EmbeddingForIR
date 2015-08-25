@@ -47,7 +47,10 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
         cxBaseC.SetConf(self, ConfIn)
         self.Searcher.SetConf(ConfIn)
         self.Evaluator.SetConf(ConfIn)
-        self.Word2VecInName = self.conf.GetConf('word2vecin')
+        self.Word2VecInName = self.conf.GetConf('word2vecin',self.Word2VecInName)
+        self.LoadWord2Vec()
+        
+    def LoadWord2Vec(self):
         logging.info('start load word2vec input')
         self.Word2VecModel = gensim.models.Word2Vec.load_word2vec_format(self.Word2VecInName)
         logging.info('word2vec loaded')
@@ -101,6 +104,8 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
         '''
         
         lQidQuery = [line.split('\t') for line in open(QueryInName).read().splitlines()]
+        
+        
         
         cLmClass = self.SelectcLmClass(cLmName)
         

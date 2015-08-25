@@ -28,17 +28,30 @@ class KernelDensityLmC(ContinuousLmC):
         self.kde = KernelDensity()
         self.lBandWidth=np.logspace(-2, 0, 10)
         self.lX = []
+        self.BandWidth = 0.1
+        
+    def SetPara(self, conf):
+        ContinuousLmC.SetPara(self, conf)
+        self.BandWidth = conf.GetConf('bandwidth',self.BandWidth)
+        return True
+    
+    
+    
         
     def Construct(self,lTerm,Word2VecModel):
         if [] == lTerm:
             return
         self.lX = [Word2VecModel[term] for term in lTerm if term in Word2VecModel]
 #         self.kde = self.CVForBestKde()
-        self.kde = KernelDensity(kernel='gaussian',bandwidth=0.3).fit(self.lX)
-#         logging.debug('doc kde lm estimated')
+        self.kde = KernelDensity(kernel='gaussian',bandwidth=self.BandWidth).fit(self.lX)
+        logging.debug('doc kde lm estimated')
         
         
     def CVForBestKde(self):
+        '''
+        this is CV for each doc's best bandwidth
+        It is better/more intuitive to CV for training query's ranking performance
+        '''
         params = {'bandwidth':self.lBandWidth}
 #         logging.debug('cv bandwidth from [%s]',json.dumps(self.lBandWidth))
         grid = GridSearchCV(KernelDensity(), params)

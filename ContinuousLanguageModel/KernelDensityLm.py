@@ -12,6 +12,10 @@ a kde, can sample, can calculate pdf of a given term
 
 
 
+import site
+from DensityEstimation.AdditiveKde import AdditiveKdeC
+site.addsitedir('/bos/usr0/cx/PyCode/cxMachineLearning')
+
 import numpy as np
 
 from sklearn.neighbors import KernelDensity
@@ -20,6 +24,7 @@ import logging
 import json
 from ContinuousLanguageModel.ContinuousLm import ContinuousLmC
 
+
 class KernelDensityLmC(ContinuousLmC):
             
             
@@ -27,12 +32,14 @@ class KernelDensityLmC(ContinuousLmC):
         ContinuousLmC.Init(self)
         self.kde = KernelDensity()
         self.lBandWidth=np.logspace(-2, 0, 10)
-        self.lX = []
         self.BandWidth = 0.1
+        self.KernelType = 'kde'
+        
         
     def SetPara(self, conf):
         ContinuousLmC.SetPara(self, conf)
         self.BandWidth = conf.GetConf('bandwidth',self.BandWidth)
+        self.KernelType = conf.GetConf('kernel',self.KernelType)
         return True
     
     
@@ -41,11 +48,22 @@ class KernelDensityLmC(ContinuousLmC):
     def Construct(self,lTerm,Word2VecModel):
         if [] == lTerm:
             return
-        self.lX = [Word2VecModel[term] for term in lTerm if term in Word2VecModel]
+        lX = [Word2VecModel[term] for term in lTerm if term in Word2VecModel]
 #         self.kde = self.CVForBestKde()
-        self.kde = KernelDensity(kernel='gaussian',bandwidth=self.BandWidth).fit(self.lX)
-        logging.debug('doc kde lm estimated')
+        self.FitKernel(lX)
         
+        logging.debug('doc kde lm estimated')
+    
+    
+    def FitKernel(self,lX):
+        if self.KernelType == 'additivekde':
+            self.kde = AdditiveKdeC()
+            self.kde.Bandwidth = self.BandWidth
+            self.kde.fit(lX)
+            return
+        self.kde = KernelDensity(kernel='gaussian',bandwidth=self.BandWidth).fit(lX)
+        return
+    
         
     def CVForBestKde(self):
         '''
@@ -60,9 +78,8 @@ class KernelDensityLmC(ContinuousLmC):
         logging.info('best bandwidth = [%f]',grid.best_estimator_.bandwidth)
         return grid.best_estimator_
     
-    
     def pdf(self,x):
-        return np.exp(self.kde.score(x))
+        return np.exp(self.LogPdf(x))
     
     def LogPdf(self, x):
         return self.kde.score(x)

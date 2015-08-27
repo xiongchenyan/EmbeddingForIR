@@ -145,8 +145,8 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
     
     def Process(self):
         
-        for OutName,cLmClass in zip(self.lOutName,self.lLmClass):
-            self.RunForOneLm(self.QueryInName, OutName, cLmClass)
+        for OutName,cLmName in zip(self.lOutName,self.lLmName):
+            self.RunForOneLm(self.QueryInName, OutName, cLmName)
 
     
     def RunForOneLm(self,QueryInName,OutName,cLmName):

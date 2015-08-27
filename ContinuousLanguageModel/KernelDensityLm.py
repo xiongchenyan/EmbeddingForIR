@@ -32,7 +32,7 @@ class KernelDensityLmC(ContinuousLmC):
         ContinuousLmC.Init(self)
         self.kde = KernelDensity()
         self.lBandWidth=np.logspace(-2, 0, 10)
-        self.BandWidth = 0.1
+        self.BandWidth = 0.001
         self.KernelType = 'additivekde'
         
         

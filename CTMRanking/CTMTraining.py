@@ -16,7 +16,7 @@ import logging
 
 site.addsitedir('/bos/usr0/cx/PyCode/cxPyLib')
 site.addsitedir('/bos/usr0/cx/PyCode/EmbeddingForIR')
-
+site.addsitedir('/bos/usr0/cx/PyCode/cxMachineLearning')
 import sys
 
 from CTMRanking.ContinuousLmRankingBase import ContinuousLmRankingBaseC

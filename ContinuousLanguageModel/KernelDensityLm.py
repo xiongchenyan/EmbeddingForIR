@@ -13,11 +13,11 @@ a kde, can sample, can calculate pdf of a given term
 
 
 import site
-from DensityEstimation.AdditiveKde import AdditiveKdeC
+
 site.addsitedir('/bos/usr0/cx/PyCode/cxMachineLearning')
 
 import numpy as np
-
+from DensityEstimation.AdditiveKde import AdditiveKdeC
 from sklearn.neighbors import KernelDensity
 from sklearn.grid_search import GridSearchCV
 import logging

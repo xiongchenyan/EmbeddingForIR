@@ -17,6 +17,7 @@ import logging
 
 
 site.addsitedir('/bos/usr0/cx/PyCode/cxPyLib')
+site.addsitedir('/bos/usr0/cx/PyCode/cxMachineLearning')
 site.addsitedir('/bos/usr0/cx/PyCode/EmbeddingForIR')
 from cxBase.Conf import cxConfC
 from cxBase.base import cxBaseC

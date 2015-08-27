@@ -48,7 +48,7 @@ class KernelDensityLmC(ContinuousLmC):
     def Construct(self,lTerm,Word2VecModel):
         if [] == lTerm:
             return
-        lX = [Word2VecModel[term] for term in lTerm if term in Word2VecModel]
+        lX = np.array([Word2VecModel[term] for term in lTerm if term in Word2VecModel])
 #         self.kde = self.CVForBestKde()
         self.FitKernel(lX)
         

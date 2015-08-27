@@ -33,7 +33,7 @@ class KernelDensityLmC(ContinuousLmC):
         self.kde = KernelDensity()
         self.lBandWidth=np.logspace(-2, 0, 10)
         self.BandWidth = 0.1
-        self.KernelType = 'kde'
+        self.KernelType = 'additivekde'
         
         
     def SetPara(self, conf):
@@ -61,8 +61,9 @@ class KernelDensityLmC(ContinuousLmC):
             self.kde.Bandwidth = self.BandWidth
             self.kde.fit(lX)
             return
-        self.kde = KernelDensity(kernel='gaussian',bandwidth=self.BandWidth).fit(lX)
-        return
+        if self.KernelType == 'kde':
+            self.kde = KernelDensity(kernel='gaussian',bandwidth=self.BandWidth).fit(lX)
+            return
     
         
     def CVForBestKde(self):

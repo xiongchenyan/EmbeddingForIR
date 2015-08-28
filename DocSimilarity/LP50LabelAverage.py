@@ -21,7 +21,7 @@ if 3 != len(sys.argv):
     sys.exit()
     
     
-lLines = open(sys.argv[1]).read().splitlines()
+lLines = open(sys.argv[1]).read().splitlines()[1:]
 
 lData = [line.split(',')[1:4] for line in lLines]
 

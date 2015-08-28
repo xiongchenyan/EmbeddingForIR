@@ -37,7 +37,7 @@ class RadiusMatchLmC(ContinuousLmC):
         
         
     def SetPara(self, conf):
-        self.MinCos = conf.GetConf('mincos',self.Radius)
+        self.MinCos = conf.GetConf('mincos',self.MinCos)
         return True
     
     

@@ -85,7 +85,7 @@ class SearchResultWordVecAnalysiserC(cxBaseC):
         
         lX = self.LoadDocWordVec()
     
-        self.MarginalAna.Process(lX, self.OutDir + '/MarginalDist')
+        self.MarginalAna.BinData(lX, self.OutDir + '/MarginalDist')
         
         logging.info('[%s] search result word vec analysis finished',self.QIn)
         

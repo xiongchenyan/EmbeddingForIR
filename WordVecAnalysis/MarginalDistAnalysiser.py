@@ -24,11 +24,8 @@ from cxBase.base import cxBaseC
 from cxBase.Conf import cxConfC
 
 import numpy as np
-import matplotlib.mlab as mlab
-import matplotlib.pyplot as plt
-
+import pickle
 class MarginalDistAnalysiserC(cxBaseC):
-    
         
     def Init(self):
         cxBaseC.Init(self)
@@ -50,35 +47,30 @@ class MarginalDistAnalysiserC(cxBaseC):
         
     
     
-    def PlotOneDim(self,x,OutPre,dim):
-        mu = np.mean(x)
-        sigma = np.var(x)
-        n, bins, patches = plt.hist(x, self.BinNumber, facecolor='blue', alpha=0.5)
-        # add a 'best fit' line
-        y = mlab.normpdf(bins, mu, sigma)
-        plt.plot(bins, y, 'r--')
-        plt.xlabel('embedding value dim %d',dim)
-        plt.ylabel('Probability')
-        plt.title(r'Histogram of Dim %d: $\mu=%f$, $\sigma=%f$',dim,mu,sigma)
+   
+
+    
+    def BinData(self,lX,OutName):
+        '''
+        bin all lX's dim
+        [[mu,sigma, bins]]
+        '''
+        lBinData = []
+        for x in lX:
+            mu = np.mean(x)
+            sigma = np.var(x)
+            hist,bins = np.histogram(x,bins=self.BinNumber)
+            lBinData.append([mu,sigma,hist, bins])
         
-        # Tweak spacing to prevent clipping of ylabel
-        plt.subplots_adjust(left=0.15)   
-        OutName = OutPre + '_%d'%(dim)
-        plt.savefig(OutName,format='pdf',dpi=1000)
-        logging.info('dim [%d] saved [%s]',OutName)
+        out = open(OutName,'w')
         
-        return True
+        pickle.dump(lBinData,out)
+        out.close()
+        logging.info('data binned to [%s]',OutName)
+        
     
     
-    def Process(self,lX,OutPre):
-        
-        for dim in range(lX.shape[1]):
-            x = lX[:,dim]
-            self.PlotOneDim(x, OutPre, dim)
-        logging.info('plotted to %s_',OutPre)
-        
-        return True
-        
+
         
     
         

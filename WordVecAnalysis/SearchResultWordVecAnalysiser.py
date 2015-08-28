@@ -74,7 +74,7 @@ class SearchResultWordVecAnalysiserC(cxBaseC):
         for doc in lDoc:
             lTerm.extend(doc.GetContent().split())
             
-        lX = [self.Word2VecModel[term] for term in lTerm if term in self.Word2VecModel]
+        lX = np.array([self.Word2VecModel[term] for term in lTerm if term in self.Word2VecModel])
         
         logging.info('target doc word vec get')
         return lX
@@ -87,7 +87,9 @@ class SearchResultWordVecAnalysiserC(cxBaseC):
         '''
         logging.info('binning data')
         lBinData = []
-        for i,x in enumerate(lX):
+        dim = lX.shape[1]
+        for i in range(dim):
+            x = lX[:,i]
             logging.info('binning dim [%d]',i)
             mu = np.mean(x)
             sigma = np.var(x)

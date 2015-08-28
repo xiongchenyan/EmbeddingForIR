@@ -35,7 +35,7 @@ class MarginalDistAnalysiserC(cxBaseC):
     def SetConf(self,ConfIn):
         cxBaseC.SetConf(self, ConfIn)
         
-        self.BinNumber = self.conf.getint('binnumber',self.BinNumber)
+        self.BinNumber = self.conf.GetConf('binnumber',self.BinNumber)
         return True
     
     @staticmethod

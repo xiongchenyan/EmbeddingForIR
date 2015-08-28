@@ -29,6 +29,7 @@ from ContinuousLanguageModel.GaussianLm import GaussianLmC
 from ContinuousLanguageModel.KernelDensityLm import KernelDensityLmC
 from ContinuousLanguageModel.SummationLm import SummationLmC
 from ContinuousLanguageModel.RandomLm import RandLmC
+from ContinuousLanguageModel.RadiusMatchLm import RadiusMatchLmC
 import gensim
 import numpy as np
 
@@ -139,6 +140,10 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
             logging.info('use rand')
             self.LmClass =  RandLmC
             return True
+        
+        if cLmName == 'radius':
+            logging.info('us radius')
+            self.LmClass = RadiusMatchLmC
         
         raise NotImplementedError('please choose continuous language model from gaussian|kde')
     

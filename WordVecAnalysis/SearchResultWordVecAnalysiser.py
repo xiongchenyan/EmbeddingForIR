@@ -135,7 +135,7 @@ class SearchResultWordVecAnalysiserC(cxBaseC):
         
         lX = self.LoadDocWordVec()
     
-        self.MarginalAna.BinData(lX, self.OutDir + '/MarginalDist')
+        self.BinData(lX, self.OutDir + '/MarginalDist')
     
         self.CalcPersonCorrelation(lX,self.OutDir + '/PersonCorrelationMtx')
         

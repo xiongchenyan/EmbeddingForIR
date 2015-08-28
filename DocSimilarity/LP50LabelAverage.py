@@ -29,6 +29,7 @@ hData = {}
 
 for a,b,score in lData:
     key = a+',' + b
+    score = float(score)
     if not key in hData:
         hData[key] = [score]
     else:

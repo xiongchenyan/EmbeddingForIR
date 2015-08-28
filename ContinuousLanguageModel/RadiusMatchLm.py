@@ -55,7 +55,7 @@ class RadiusMatchLmC(ContinuousLmC):
     
     
     def pdf(self,x):
-        x.reshape(1,self.d)
+        x=x.reshape(1,self.d)
         m = self.lX - np.ones([self.n,1]).dot(x)
         NeighborCnt = 0
         for i in range(self.n):

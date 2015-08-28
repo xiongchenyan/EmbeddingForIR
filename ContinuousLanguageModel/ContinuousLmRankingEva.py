@@ -142,8 +142,9 @@ class ContinuousLmRankingEvaluatorC(cxBaseC):
             return True
         
         if cLmName == 'radius':
-            logging.info('us radius')
+            logging.info('use radius')
             self.LmClass = RadiusMatchLmC
+            return True
         
         raise NotImplementedError('please choose continuous language model from gaussian|kde')
     

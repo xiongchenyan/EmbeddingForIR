@@ -29,7 +29,7 @@ import pickle
 import logging
 
 
-def ReadAndPlot(self,BinInName,OutPre):
+def ReadAndPlot(BinInName,OutPre):
     lBinData = pickle.load(open(BinInName))
     
     dim = 0
@@ -38,15 +38,16 @@ def ReadAndPlot(self,BinInName,OutPre):
         center = (bins[:-1] + bins[1:]) / 2
         plt.bar(center,hist,align='center',width=0.7 * (bins[1] - bins[0]))
 #         plt.plot(bins, y, 'r--')
-        plt.xlabel('embedding value dim %d',dim)
+        plt.xlabel('embedding value dim %d'%(dim))
         plt.ylabel('Probability')
-        plt.title(r'Histogram of Dim %d: $\mu=%f$, $\sigma=%f$',dim,mu,sigma)
+        plt.title(r'Histogram of Dim %d: $\mu=%f$, $\sigma=%f$'%(dim,mu,sigma))
         
         # Tweak spacing to prevent clipping of ylabel
         plt.subplots_adjust(left=0.15)   
-        OutName = OutPre + '_%d'%(dim)
-        plt.savefig(OutName,format='pdf',dpi=1000)
-        logging.info('dim [%d] saved [%s]',OutName)
+        OutName = OutPre + '_%d.png'%(dim)
+        plt.savefig(OutName,format='png',dpi=1000)
+        plt.close()
+        logging.info('dim [%d] saved [%s]',dim,OutName)
         dim += 1
         
     logging.info('plotted')

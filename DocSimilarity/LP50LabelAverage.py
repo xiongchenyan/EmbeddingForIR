@@ -28,7 +28,9 @@ lData = [line.split(',')[1:4] for line in lLines]
 hData = {}
 
 for a,b,score in lData:
-    key = a+',' + b
+    l = [int(a),int(b)]
+    l.sort()
+    key = '%d,%d'%(l[0],l[1])
     score = float(score)
     if not key in hData:
         hData[key] = [score]

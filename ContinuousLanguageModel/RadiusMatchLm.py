@@ -23,21 +23,21 @@ import numpy as np
 import logging
 import json
 from ContinuousLanguageModel.ContinuousLm import ContinuousLmC
-
+import scipy
 
 class RadiusMatchLmC(ContinuousLmC):
             
             
     def Init(self):
         ContinuousLmC.Init(self)
-        self.Radius = 0.01
+        self.MinCos = 0.7
         self.lX = []
         self.n = 0
         self.d = 0
         
         
     def SetPara(self, conf):
-        self.Radius = conf.GetConf('radius',self.Radius)
+        self.MinCos = conf.GetConf('mincos',self.Radius)
         return True
     
     
@@ -59,7 +59,8 @@ class RadiusMatchLmC(ContinuousLmC):
         m = self.lX - np.ones([self.n,1]).dot(x)
         NeighborCnt = 0
         for i in range(self.n):
-            if np.linalg.norm(m[i,:]) <= self.Radius:
+            cos = 1 - scipy.spatial.distance.cosine(self.lX[i,:],x)
+            if cos >= self.MinCos:
                 NeighborCnt += 1
         
         return NeighborCnt / float(self.n)

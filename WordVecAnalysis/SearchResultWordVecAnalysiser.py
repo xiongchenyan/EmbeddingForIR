@@ -120,25 +120,38 @@ class SearchResultWordVecAnalysiserC(cxBaseC):
                     logging.info('[%d-%d] correlated p=%f',i,j,p)
         
         out = open(OutName + '_pearson','w')
-        print >>out, np.array2string(mPearson)
+        pickle.dump(mPearson,out)
+#         print >>out, np.array2string(mPearson)
         out.close()
         
         out = open(OutName + '_pvalue','w')
-        print >>out, np.array2string(mPValue)
+        pickle.dump(mPValue,out)
+#         print >>out, np.array2string(mPValue)
         out.close()
         
         logging.info('pearson corr calculated and dumped')
         
         return True
         
+    def CalcCovarianceMtx(self,lX,OutName):
+        logging.info('start calculating covariance matrix')
+        CovMtx = np.cov(lX.T)
+        out = open(OutName,'w')
+        pickle.dump(CovMtx,out)
+        out.close()
+        logging.info('covariance dumped to [%s]',OutName)
         
+        
+            
     
     def Process(self):
         
         lX = self.LoadDocWordVec()
     
-        self.BinData(lX, self.OutDir + '/MarginalDist')
-    
+#         self.BinData(lX, self.OutDir + '/MarginalDist')
+        
+        
+        self.CalcCovarianceMtx(lX, self.OutDir + '/CovarianceMtx')
         self.CalcPersonCorrelation(lX,self.OutDir + '/PersonCorrelationMtx')
         
         logging.info('[%s] search result word vec analysis finished',self.QIn)

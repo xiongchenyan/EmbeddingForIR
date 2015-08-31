@@ -135,7 +135,15 @@ class SearchResultWordVecAnalysiserC(cxBaseC):
         
     def CalcCovarianceMtx(self,lX,OutName):
         logging.info('start calculating covariance matrix')
-        CovMtx = np.cov(lX.T)
+#         CovMtx = np.cov(lX.T)   #OOM
+        d = lX.shape[1]
+        CovMtx = np.zeros([d,d])
+        for i in range(d):
+            for j in range(i,d):
+                MiniCovMtx = np.cov(lX[:,i],lX[:,j])
+                CovMtx[i,j] = MiniCovMtx[0,1]
+                CovMtx[i,i] = MiniCovMtx[0,0]
+                CovMtx[j,i] = MiniCovMtx[1,0]
         out = open(OutName,'w')
         pickle.dump(CovMtx,out)
         out.close()
